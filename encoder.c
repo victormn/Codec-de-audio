@@ -8,7 +8,7 @@ int main(int argc, char const *argv[]){
 	int flag_diferenca = 0, flag_carreira = 0, flag_huffman = 0;
 
 	if(argc < 3){
-		printf("\nUtilize: ./encoder -d -c -h <entrada.wav> <saida.bin>\n\n");
+		printf("\nUtilize: ./encoder -d -c -h <entrada.wav> <saida.bin>\n");
 		printf("\nAs flags -d -c -h sao opcionais e podem ser inseridas em qualquer ordem\n\n");
 		return EXIT_FAILURE;
 	}
