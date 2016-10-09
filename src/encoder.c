@@ -22,7 +22,7 @@ typedef struct  WAV_HEADER{
 
 
 // Faz a leitura de um arquivo wave
-// Retorna o tamanho do arquivo, caso lido com sucesso
+// Retorna o tamanho do arquivo (em bytes), caso lido com sucesso
 int read_wave(char const *arg) {
 
     FILE *f;    
@@ -79,8 +79,6 @@ int main(int argc, char const *argv[]){
 
     // Lendo o arquivo WAVE (penultimo parametro)
     fileSize = read_wave(argv[argc-2]);
-
-    printf("%d\n", fileSize);
 
 	return 0;
 }
