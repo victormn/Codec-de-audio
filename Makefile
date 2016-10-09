@@ -1,5 +1,5 @@
 all:
-	@gcc encoder.c -o encoder
+	@gcc src/encoder.c -o encoder
 
 clean:
 	@rm -f encoder
