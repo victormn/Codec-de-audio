@@ -7,9 +7,12 @@
 //
 
 #include "file_manager.h"
-/*#include "carreira_codec.h"
-#include "diferenca_codec.h"
-#include "huffman_codec.h"*/
+#include "bit_manager.h"
+// #include "carreira.h"
+#include "diferenca.h"
+// #include "huffman.h"
+
+#include "testes.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,6 +23,7 @@ int main(int argc, char const *argv[]){
 	FILE *output;
 	int fileSize = 0;
     char *buffer;
+    int i;
 
 	// Flags para saber quais metodos de codificacao serao utilizados
 	int flag_diferenca = 0, flag_carreira = 0, flag_huffman = 0;
@@ -32,38 +36,23 @@ int main(int argc, char const *argv[]){
 	}
 
 	// Verificando quais metodos de codificacao serao utilizados
-	// obs: como o numero minimo de argumentos estabelecido foi 3, deve-se verificar se ha mais que 3 argumentos
-	//antes de verificar o argv[3]
-	if(strcmp (argv[1], "-d") == 0 || strcmp (argv[2], "-d") == 0 || (argc > 3 && strcmp (argv[3], "-d") == 0))
-		flag_diferenca = 1;
-
-	if(strcmp (argv[1], "-c") == 0 || strcmp (argv[2], "-c") == 0 || (argc > 3 && strcmp (argv[3], "-c") == 0))
-		flag_carreira = 1;
-
-	if(strcmp (argv[1], "-h") == 0 || strcmp (argv[2], "-h") == 0 || (argc > 3 && strcmp (argv[3], "-h") == 0))
-		flag_huffman = 1;
-
-	// Verificando entradas invalidas (serao ignoradas)
-	if(argc >= 4 && strcmp (argv[1], "-d") != 0 && strcmp (argv[1], "-c") != 0 && strcmp (argv[1], "-h") != 0)
-		printf("Argumento '%s' ignorado\n", argv[1]);
-
-	if(argc >= 5 && strcmp (argv[2], "-d") != 0 && strcmp (argv[2], "-c") != 0 && strcmp (argv[2], "-h") != 0)
-		printf("Argumento '%s' ignorado\n", argv[2]);
-
-	if(argc == 6 && strcmp (argv[3], "-d") != 0 && strcmp (argv[3], "-c") != 0 && strcmp (argv[3], "-h") != 0)
-		printf("Argumento '%s' ignorado\n", argv[3]);
-
+	for (i = 1; i < argc-2; i++){
+		if(strcmp (argv[i], "-d") == 0) flag_diferenca = 1;
+		else if(strcmp (argv[i], "-c") == 0) flag_carreira = 1;
+		else if(strcmp (argv[i], "-h") == 0) flag_huffman = 1;
+		else printf("Argumento '%s' ignorado\n", argv[i]);
+	}
 
 	// Lendo o arquivo WAVE (penultimo parametro)
 	fileSize = read_wave(argv[argc-2], &buffer);
 
-/*	// Codificacao por CARREIRA
-	if(flag_carreira == 1)
-		fileSize = carreira_encoder(&buffer, fileSize);
-
-	// Codificacao por DIFERENCA
+/*	// Codificacao por DIFERENCA
 	if(flag_diferenca == 1)
 		fileSize = diferenca_encoder(&buffer, fileSize);
+
+	// Codificacao por CARREIRA
+	if(flag_carreira == 1)
+		fileSize = carreira_encoder(&buffer, fileSize);
 
 	// Codificacao por HUFFMAN
 	if(flag_huffman == 1)
@@ -71,6 +60,22 @@ int main(int argc, char const *argv[]){
 
 	// Escrevendo a stream de dados no arquivo passado como ultimo parametro
 	write_bin(argv[argc-1], buffer, fileSize);
+
+// ------------------------------- JUST FOR TEST -------------------------------------------
+
+	int valormaximo = valor_maximo(buffer, fileSize);
+	int logdovalormaximo = log_2((double)valormaximo);
+	printf("%d %d\n", valormaximo, logdovalormaximo);
+
+	char * dif = diferenca_byte_a_byte(buffer, fileSize);
+
+	valormaximo = valor_maximo(dif, fileSize);
+	logdovalormaximo = log_2((double)valormaximo);
+	printf("%d %d\n", valormaximo, logdovalormaximo);
+
+	//print_vetores(buffer, dif, fileSize);
+
+printf("%d\n", log_2(89));
 
 	return 0;
 }

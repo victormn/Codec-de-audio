@@ -1,8 +1,7 @@
 CFLAGS= -I headers/
 
 all: classes
-	@#gcc ./src/encoder.c -o encoder
-	@gcc ./src/encoder.c $(CFLAGS) -o encoder ./obj/file_manager.o
+	@gcc ./src/encoder.c $(CFLAGS) -o encoder ./obj/file_manager.o ./obj/bit_manager.o ./obj/testes.o ./obj/diferenca.o -lm
 	@echo "! Compilado com sucesso !"
 	@echo
 	@echo "Para rodar, utilize:"
@@ -11,6 +10,9 @@ all: classes
 
 classes:
 	@gcc -c ./src/file_manager.c $(CFLAGS) -o ./obj/file_manager.o
+	@gcc -c ./src/bit_manager.c $(CFLAGS) -o ./obj/bit_manager.o
+	@gcc -c ./src/testes.c $(CFLAGS) -o ./obj/testes.o
+	@gcc -c ./src/diferenca.c $(CFLAGS) -o ./obj/diferenca.o
 
 clean:
 	@rm -f ./obj/*.o encoder
