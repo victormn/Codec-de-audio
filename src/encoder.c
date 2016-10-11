@@ -67,7 +67,7 @@ int main(int argc, char const *argv[]){
 	int logdovalormaximo = log_2((double)valormaximo);
 	printf("%d %d\n", valormaximo, logdovalormaximo);
 
-	char * dif = diferenca_byte_a_byte(buffer, fileSize);
+	char * dif = diferenca_2_a_2(buffer, fileSize);
 
 	valormaximo = valor_maximo(dif, fileSize);
 	logdovalormaximo = log_2((double)valormaximo);
@@ -75,7 +75,9 @@ int main(int argc, char const *argv[]){
 
 	//print_vetores(buffer, dif, fileSize);
 
-printf("%d\n", log_2(89));
+	contador_bit_a_bit(-1);
+
+	printf("%d\n", 0b11111111);
 
 	return 0;
 }

@@ -1,4 +1,4 @@
-CFLAGS= -I headers/
+CFLAGS= -I inc/
 
 all: classes
 	@gcc ./src/encoder.c $(CFLAGS) -o encoder ./obj/file_manager.o ./obj/bit_manager.o ./obj/testes.o ./obj/diferenca.o -lm
