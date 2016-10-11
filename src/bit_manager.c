@@ -10,10 +10,10 @@
 //			(2) tamanho do vetor
 // Saida: valor maximo do vetor
 
-char valor_maximo(char * vet, int size){
+short valor_maximo(short * vet, int size){
 
 	int i;
-	char maior = 0;
+	short maior = 0;
 
 	for(i=0; i<size; i++){
 
@@ -46,12 +46,12 @@ int log_2(double x){
 //			(2) tamanho do vetor
 // Saida: vetor com os novos elementos
 
-char * merge_bits(char * vet, int size){
+short * merge_bits(short * vet, int size){
 
-	int i, j = 0;
-	int min_bit, n_current, current;
-	long merge;
-	char * result;
+	int i, j;
+	int min_bit, n_current, current, numero_zeros;
+	long long merge;
+	short * result;
 
 	// Calcula o valor minimo de bits que pode ser usado para
 	//representar o maior elemento do vetor
@@ -59,37 +59,68 @@ char * merge_bits(char * vet, int size){
 	min_bit = log_2((double)valormaximo);
 
 	// Alocando o vetor de saida
-	int result_size = (int)ceil(size/8*min_bit);
-	result = (char*) malloc (sizeof(char)*result_size);
+	double result_size = ceil(size*min_bit/16.0) + 1.0;
+	result = (short*) malloc (sizeof(short)*result_size);
 
 	// Valores iniciais da iteracao
-	current = vet[0] << (8 - min_bit);
+	current = vet[0] << (16 - min_bit);
 	n_current = min_bit;
 
-	// De dois em dois elementos, transforma ambos em 16 bits,
+	// De dois em dois elementos, transforma ambos em 32 bits,
 	//faz a operacao de OR entre ambos e salva no vetor de resposta
-	for (i = 1; i < size; i++){
+	for (i = 1, j = 1; i < size; i++){
 
-		merge = (current << 8) |  (vet[i] << (16 - min_bit - n_current));
+		merge = (current << 16) |  (vet[i] << (32 - min_bit - n_current));
 
 		// Verifica se ainda eh possivel utilizar o byte ou se deve ir ao proximo
-		if ((min_bit + n_current) < 8){
-			current = (merge & 0xff00) >> 8;
+		if ((min_bit + n_current) < 16){
+			current = (merge & 0xffff0000) >> 16;
 			n_current += min_bit;
 		}else{
-			current = (merge & 0xff);
-			n_current += min_bit - 8;
-			result[j] = (merge & 0xff00) >> 8;
+			current = (merge & 0xffff);
+			n_current += min_bit - 16;
+			result[j] = (merge & 0xffff0000) >> 16;
 			j++;
 		}
 
 		// Utilizado para o ultimo elemento
-		if(i == size-1)	result[j] = (merge & 0xff00) >> 8;	
+		if(i == size-1){
+			result[j] = current;
+			numero_zeros = 16 - n_current;
+		}
 
 	}
+
+	// Header: numero minimo de bits necessario pra representar um elemento 
+	//+ numero de zeros no finaldo arquivo + 00000000
+	result[0] = ((min_bit & 0xf) << 12) | ((numero_zeros & 0xf) << 8);
 
 	return result;
 }
 
+/*short * extend_bits(short * vet, int size){
+
+	int i, j;
+	int result_size, min_bit, numero_zeros, current;
+	short * result;
+	long long merge;
+
+	min_bit = (vet[0] & 0xf0000000) >> 12;
+	numero_zeros = (vet[0] & 0x0f000000) >> 8;
+
+	result_size = (int)(ceil(((double)size-1.0)*16.0/min_bit));
+	result = (short*) malloc (sizeof(short)*result_size);
+
+	current = vet[0]; 
+
+	for(i = 0, j = 1; i<result_size; i++){
+
+		merge = (current << 16) |  vet[j];
+
+		result[i] = merge &
+	}
+
+	return result;
+}*/
 
 

@@ -12,7 +12,7 @@ void contador_bit_a_bit(int n, int size){
 
     int i;
 
-    for(i = size; i >= 0; i--)
+    for(i = size-1; i >= 0; i--)
         printf("%d", (n >> i) & 0x01);
 
     printf("\n");
@@ -25,7 +25,7 @@ void contador_bit_a_bit(int n, int size){
 //			(2) vetor 2
 //			(3) tamanho dos vetores
 
-void print_vetores (char * vet1, char * vet2, int size){
+void print_vetores (short * vet1, short * vet2, int size){
 
 	for (int i = 0; i < size; ++i){
 

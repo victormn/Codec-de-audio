@@ -18,11 +18,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <math.h>
+
 int main(int argc, char const *argv[]){
 	
 	FILE *output;
 	int fileSize = 0;
-    char *buffer;
+    short *buffer;
     int i;
 
 	// Flags para saber quais metodos de codificacao serao utilizados
@@ -68,13 +70,11 @@ int main(int argc, char const *argv[]){
 
 /*	int valormaximo = valor_maximo(buffer, fileSize);
 	int logdovalormaximo = log_2((double)valormaximo);
-	printf("%d %d\n", valormaximo, logdovalormaximo);
 
 	char * dif = diferenca_2_a_2(buffer, fileSize);
 
 	valormaximo = valor_maximo(dif, fileSize);
 	logdovalormaximo = log_2((double)valormaximo);
-	printf("%d %d\n", valormaximo, logdovalormaximo);
 
 	print_vetores(buffer, dif, fileSize);*/
 
@@ -90,21 +90,25 @@ int main(int argc, char const *argv[]){
 
 	// -------------------TESTEANDO O MERGE_BITS-----------------------------------------------------------------------------------
 
-/*	char teste[9] = {0b00011111, 0b00001010, 0b00001010, 0b00001010, 0b00001010, 0b00001010, 0b00001010, 0b00001010, 0b00001010};
+	short teste[9] = {0b0001111111111111, 0b0000111111111111, 0b0000111111111111, 0b0000111111111111, 0b0000111111111111, 
+		0b0000111111111111, 0b0000111111111111, 0b0000111111111111, 0b0000111111111111};
 
-	char * result = merge_bits(teste, 9);
+
+	short * result = merge_bits(teste, 9);
 
 	for (i = 0; i < 9; ++i){
 		
-		contador_bit_a_bit(teste[i], 8);
+		contador_bit_a_bit(teste[i], 16);
 
 	}
 
-	for (i = 0; i < 6; ++i){
-		
-		contador_bit_a_bit(result[i], 8);
+	printf("\n");
 
-	}*/
+	for (i = 0; i < 9; ++i){
+		
+		contador_bit_a_bit(result[i], 16);
+
+	}
 	// ---------------------------------------------------------------------------------------------------------------------------
 	
 	return 0;

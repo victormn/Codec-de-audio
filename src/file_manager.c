@@ -9,7 +9,7 @@
 //			(2) buffer para armazena-lo
 // Saida: tamanho (bytes) do arquivo lido
 
-int read_wave(char const *arg, char **buffer) {
+int read_wave(char const *arg, short **buffer) {
 
     FILE *f;    
     int fileSize = 0;
@@ -28,7 +28,7 @@ int read_wave(char const *arg, char **buffer) {
 	rewind (f);
 
     // Alocando um buffer para armazenar os dados do arquivo
-	*buffer = (char*) malloc (sizeof(char)*fileSize);
+	*buffer = (short*) malloc (sizeof(short)*fileSize);
 	if (*buffer == NULL) {
 	    printf("! Erro !\n\nMemoria nao alocada para o buffer\n");
 	    return EXIT_FAILURE;
@@ -53,7 +53,7 @@ int read_wave(char const *arg, char **buffer) {
 //			(3) tamanho da stream
 // Saida: 0, se sucesso, mensagem de erro, se falhar
 
-int write_bin(char const *arg, char *buffer, int size){
+int write_bin(char const *arg, short *buffer, int size){
 
  	FILE *f;
 

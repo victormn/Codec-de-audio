@@ -1,8 +1,8 @@
-#ifndef TOOLBOX_H_
-#define TOOLBOX_H_
+#ifndef BITMANAGER_H_
+#define BITMANAGER_H_
 
 int log_2(double x);
-char valor_maximo(char * vet, int size);
-char * merge_bits(char * vet, int size);
+short valor_maximo(short * vet, int size);
+short * merge_bits(short * vet, int size);
 
 #endif

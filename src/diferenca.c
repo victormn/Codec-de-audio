@@ -9,12 +9,12 @@
 //			(2) tamanho do vetor
 // Saida: vetor com as diferencas 2 a 2
 
-char * diferenca_2_a_2(char * buffer, int size){
+short* diferenca_2_a_2(short * buffer, int size){
 
 	int i;
-	char *vet;
+	short *vet;
 
-	vet = (char*) malloc (sizeof(char)*size);
+	vet = (short*) malloc (sizeof(short)*size);
 
 	vet[0] = buffer[0];
 
