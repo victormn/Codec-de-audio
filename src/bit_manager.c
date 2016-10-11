@@ -1,6 +1,7 @@
 #include "bit_manager.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 
 // -- Valor maximo de um vetor --
@@ -43,11 +44,51 @@ int log_2(double x){
 //
 // Entrada: (1) vetor
 //			(2) tamanho do vetor
-// Saida: tamanho (bytes) do arquivo lido
+// Saida: vetor com os novos elementos
 
-int merge_bits(char * vet, int size){
+char * merge_bits(char * vet, int size){
 
+	int i, j = 0;
+	int min_bit, n_current, current;
+	long merge;
+	char * result;
 
+	// Calcula o valor minimo de bits que pode ser usado para
+	//representar o maior elemento do vetor
+	int valormaximo = valor_maximo(vet, size);
+	min_bit = log_2((double)valormaximo);
+
+	// Alocando o vetor de saida
+	int result_size = (int)ceil(size/8*min_bit);
+	result = (char*) malloc (sizeof(char)*result_size);
+
+	// Valores iniciais da iteracao
+	current = vet[0] << (8 - min_bit);
+	n_current = min_bit;
+
+	// De dois em dois elementos, transforma ambos em 16 bits,
+	//faz a operacao de OR entre ambos e salva no vetor de resposta
+	for (i = 1; i < size; i++){
+
+		merge = (current << 8) |  (vet[i] << (16 - min_bit - n_current));
+
+		// Verifica se ainda eh possivel utilizar o byte ou se deve ir ao proximo
+		if ((min_bit + n_current) < 8){
+			current = (merge & 0xff00) >> 8;
+			n_current += min_bit;
+		}else{
+			current = (merge & 0xff);
+			n_current += min_bit - 8;
+			result[j] = (merge & 0xff00) >> 8;
+			j++;
+		}
+
+		// Utilizado para o ultimo elemento
+		if(i == size-1)	result[j] = (merge & 0xff00) >> 8;	
+
+	}
+
+	return result;
 }
 
 

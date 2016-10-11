@@ -61,9 +61,12 @@ int main(int argc, char const *argv[]){
 	// Escrevendo a stream de dados no arquivo passado como ultimo parametro
 	write_bin(argv[argc-1], buffer, fileSize);
 
-// ------------------------------- JUST FOR TEST -------------------------------------------
+// ------------------------------------------------------ JUST FOR TEST -----------------------------------------------------------
 
-	int valormaximo = valor_maximo(buffer, fileSize);
+	
+	// -------------------TESTEANDO A DIFERENCA 2 A 2 -----------------------------------------------------------------------------
+
+/*	int valormaximo = valor_maximo(buffer, fileSize);
 	int logdovalormaximo = log_2((double)valormaximo);
 	printf("%d %d\n", valormaximo, logdovalormaximo);
 
@@ -73,11 +76,38 @@ int main(int argc, char const *argv[]){
 	logdovalormaximo = log_2((double)valormaximo);
 	printf("%d %d\n", valormaximo, logdovalormaximo);
 
-	//print_vetores(buffer, dif, fileSize);
+	print_vetores(buffer, dif, fileSize);*/
 
-	contador_bit_a_bit(-1);
+	// --------------------TESTANDO CONTADOR BIT A BIT PARA NEGATIVO --------------------------------------------------------------
 
-	printf("%d\n", 0b11111111);
+/*	contador_bit_a_bit(-1);
 
+	printf("%d\n", 0b11111111);*/
+
+	// --------------------TESTANDO SHIFT -----------------------------------------------------------------------------------------
+
+/*	shift(31, 11);*/
+
+	// -------------------TESTEANDO O MERGE_BITS-----------------------------------------------------------------------------------
+
+/*	char teste[9] = {0b00011111, 0b00001010, 0b00001010, 0b00001010, 0b00001010, 0b00001010, 0b00001010, 0b00001010, 0b00001010};
+
+	char * result = merge_bits(teste, 9);
+
+	for (i = 0; i < 9; ++i){
+		
+		contador_bit_a_bit(teste[i], 8);
+
+	}
+
+	for (i = 0; i < 6; ++i){
+		
+		contador_bit_a_bit(result[i], 8);
+
+	}*/
+	// ---------------------------------------------------------------------------------------------------------------------------
+	
 	return 0;
 }
+
+

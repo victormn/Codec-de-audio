@@ -1,4 +1,5 @@
 #include "testes.h"
+#include "bit_manager.h"
 
 #include <stdio.h>
 #include <math.h>
@@ -7,11 +8,11 @@
 //
 // Entrada: (1) numero
 
-void contador_bit_a_bit(int n){
+void contador_bit_a_bit(int n, int size){
 
     int i;
 
-    for(i = 7; i >= 0; i--)
+    for(i = size; i >= 0; i--)
         printf("%d", (n >> i) & 0x01);
 
     printf("\n");
@@ -30,4 +31,19 @@ void print_vetores (char * vet1, char * vet2, int size){
 
 		printf("%d %d\n", vet1[i], vet2[i]);
 	}
+}
+
+// -- Faz shift em um numero --
+//
+// Entrada: (1) numero
+//			(2) quantidade a ser shifitada
+
+void shift(int n, int s){
+
+	long long int s2 = n << s;
+
+	printf("%llu\n", s2);
+
+	contador_bit_a_bit(s2, log_2((double)s2));
+
 }
