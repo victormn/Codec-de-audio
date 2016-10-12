@@ -92,13 +92,25 @@ int main(int argc, char const *argv[]){
 
 	// -------------------TESTEANDO O MERGE_BITS-----------------------------------------------------------------------------------
 
-	short teste[9] = {0b0001111111111111, 0b0000111111111111, 0b0000111111111111, 0b0000111111111111, 0b0000111111111111, 
-		0b0000111111111111, 0b0000111111111111, 0b0000111111111111, 0b0000111111111111};
+/*	int size = 16;
 
+	short teste0[16] = {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 , 2};
+	short teste1[16] = {1, 5, 4, 3, 8, 10, 127, 4, 7, 8, 9, 7, 15, 2, 1 , 3};
+	short teste2[16] = {-1, -5, -4, -3, -8, -10, -16, -4, -7, -8, -9, -7, -15, -2, -1 , -3};
+	short teste3[16] = {10, 50, 40, 30, 80, 100, 160, 40, 70, 80, 90, 70, 150, 20, 10 , 30};
+	short teste4[16] = {-10, -50, -40, -30, -80, -100, -160, -40, -70, -80, -90, -70, -150, -20, -10 , -30};
 
-	short * result = merge_bits(teste, 9);
+	short * teste = teste1;
 
-	for (i = 0; i < 9; ++i){
+	int valormaximo = valor_maximo(teste, size);
+	int min_bit = log_2((double)valormaximo);
+	double result_size = ceil(size*min_bit/16.0) + 1.0;
+
+	if(min_bit == 16) result_size = size;
+
+	short * result = merge_bits(teste, size);
+
+	for (i = 0; i < size; ++i){
 		
 		contador_bit_a_bit(teste[i], 16);
 
@@ -106,25 +118,52 @@ int main(int argc, char const *argv[]){
 
 	printf("\n");
 
-	for (i = 0; i < 9; ++i){
+	for (i = 0; i < result_size; ++i){
 		
 		contador_bit_a_bit(result[i], 16);
 
 	}
 
-	short * outroresult = extend_bits(result, 9);
+
+	short * outroresult = extend_bits(result, result_size);
 
 	printf("\n");
 
-	for (i = 0; i < 9; ++i){
+	for (i = 0; i < size; ++i){
 		
 		contador_bit_a_bit(outroresult[i], 16);
 
 	}
 
-	// ---------------------------------------------------------------------------------------------------------------------------
-	
+	printf("\nvalormaximo = %d\nmin_bit = %d\n", valormaximo, min_bit);
+	printf("diferentes = ");
+	diferente(teste, outroresult, size);*/
+
+	// --------------------- TESTANDO NEG MANAGER --------------------------------------------------------------------------------
+/*
+	short a = -15;
+	short b = comp2_to_bit1(a, 8);
+
+	short c = 15;
+	short d = comp2_to_bit1(c, 8);
+
+	contador_bit_a_bit(a, 16);
+	contador_bit_a_bit(b, 16);
+	contador_bit_a_bit(c, 16);
+	contador_bit_a_bit(d, 16);
+
+	short e = b;
+	short f = bit1_to_comp2(e, 8);
+
+	short g = d;
+	short h = bit1_to_comp2(g, 8);
+
+	contador_bit_a_bit(e, 16);
+	contador_bit_a_bit(f, 16);
+	contador_bit_a_bit(g, 16);
+	contador_bit_a_bit(h, 16);
+*/
+
+
 	return 0;
 }
-
-

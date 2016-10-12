@@ -49,3 +49,15 @@ void shift(int n, int s){
 	contador_bit_a_bit(s2, log_2((double)s2));
 
 }
+
+void diferente(short * vet1, short * vet2, int size){
+
+	int i;
+
+	for (i = 0; i < size; ++i){
+
+		if(vet1[i] != vet2[i]) printf("%d ", i);
+	}
+	printf("\n");
+
+}
