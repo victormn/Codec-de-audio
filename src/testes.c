@@ -27,7 +27,9 @@ void contador_bit_a_bit(int n, int size){
 
 void print_vetores (short * vet1, short * vet2, int size){
 
-	for (int i = 0; i < size; ++i){
+	int i;
+
+	for (i = 0; i < size; ++i){
 
 		printf("%d %d\n", vet1[i], vet2[i]);
 	}

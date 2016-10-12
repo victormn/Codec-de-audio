@@ -22,7 +22,6 @@
 
 int main(int argc, char const *argv[]){
 	
-	FILE *output;
 	int fileSize = 0;
     short *buffer;
     int i;
@@ -48,17 +47,20 @@ int main(int argc, char const *argv[]){
 	// Lendo o arquivo WAVE (penultimo parametro)
 	fileSize = read_wave(argv[argc-2], &buffer);
 
-/*	// Codificacao por DIFERENCA
-	if(flag_diferenca == 1)
-		fileSize = diferenca_encoder(&buffer, fileSize);
+	// Codificacao por DIFERENCA
+	if(flag_diferenca == 1){
+		//fileSize = diferenca_encoder(&buffer, fileSize);
+	}
 
 	// Codificacao por CARREIRA
-	if(flag_carreira == 1)
-		fileSize = carreira_encoder(&buffer, fileSize);
+	if(flag_carreira == 1){
+		//fileSize = carreira_encoder(&buffer, fileSize);
+	}
 
 	// Codificacao por HUFFMAN
-	if(flag_huffman == 1)
-		fileSize = huffman_encoder(&buffer, fileSize);*/
+	if(flag_huffman == 1){
+		//fileSize = huffman_encoder(&buffer, fileSize);
+	}
 
 	// Escrevendo a stream de dados no arquivo passado como ultimo parametro
 	write_bin(argv[argc-1], buffer, fileSize);
@@ -109,6 +111,17 @@ int main(int argc, char const *argv[]){
 		contador_bit_a_bit(result[i], 16);
 
 	}
+
+	short * outroresult = extend_bits(result, 9);
+
+	printf("\n");
+
+	for (i = 0; i < 9; ++i){
+		
+		contador_bit_a_bit(outroresult[i], 16);
+
+	}
+
 	// ---------------------------------------------------------------------------------------------------------------------------
 	
 	return 0;

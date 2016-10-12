@@ -1,7 +1,7 @@
 CFLAGS= -I inc/
 
 all: classes
-	@gcc ./src/encoder.c $(CFLAGS) -o encoder ./obj/file_manager.o ./obj/bit_manager.o ./obj/testes.o ./obj/diferenca.o -lm
+	@gcc ./src/encoder.c $(CFLAGS) -o encoder ./obj/file_manager.o ./obj/bit_manager.o ./obj/testes.o ./obj/diferenca.o -lm -Wall
 	@echo "! Compilado com sucesso !"
 	@echo
 	@echo "Para rodar, utilize:"
