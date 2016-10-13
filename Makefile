@@ -22,4 +22,5 @@ memory:
 	@valgrind ./encoder -d -c -h files/inputs/sample1.wav files/output/output.wav
 
 run:
+	@echo "Apenas para testes..."
 	@./encoder -d -c -h files/inputs/sample1.wav files/output/output.wav

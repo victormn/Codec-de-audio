@@ -128,7 +128,7 @@ int main(int argc, char const *argv[]){
 
 	if(min_bit == 16) result_size = size;
 
-	short * result = merge_bits(teste, size);
+	short * result = merge_bits(teste, size, 42);
 
 	for (i = 0; i < size; ++i){
 		
@@ -144,8 +144,9 @@ int main(int argc, char const *argv[]){
 
 	}
 
+	short a;
 
-	short * outroresult = extend_bits(result, result_size);
+	short * outroresult = extend_bits(result, result_size, &a);
 
 	printf("\n");
 
@@ -157,7 +158,8 @@ int main(int argc, char const *argv[]){
 
 	printf("\nvalormaximo = %d\nmin_bit = %d\n", valormaximo, min_bit);
 	printf("diferentes = ");
-	diferente(teste, outroresult, size);*/
+	diferente(teste, outroresult, size);
+	printf("a = %d\n", a);*/
 
 	// --------------------- TESTANDO NEG MANAGER --------------------------------------------------------------------------------
 /*

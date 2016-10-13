@@ -84,7 +84,7 @@ short bit1_to_comp2(short a, int min_bit){
 //			(2) tamanho do vetor
 // Saida: vetor com os novos elementos
 
-short * merge_bits(short * vet, int size){
+short * merge_bits(short * vet, int size, short header){
 
 	int i, j;
 	int min_bit, n_current, current, numero_zeros;
@@ -101,8 +101,8 @@ short * merge_bits(short * vet, int size){
 	result = (short*) malloc (sizeof(short)*result_size);
 
 	// Header: numero minimo de bits necessario pra representar um elemento 
-	//+ numero de zeros no finaldo arquivo + 00000000
-	result[0] = min_bit;
+	//+ header do parametro
+	result[0] = (min_bit << 12) | header;
 
 	// Se o vaor minimo de bits que pode ser usado para
 	//representar = 16, nao ha o que comprimir
@@ -152,7 +152,7 @@ short * merge_bits(short * vet, int size){
 //			(2) tamanho do vetor
 // Saida: vetor com os novos elementos
 
-short * extend_bits(short * vet, int size){
+short * extend_bits(short * vet, int size, short *header){
 
 	int i, j;
 	int result_size, n_current, min_bit;
@@ -161,7 +161,8 @@ short * extend_bits(short * vet, int size){
 	long long merge, current;
 
 	// Obtendo o numero minimo de bits que o maior elemento pode ser representado
-	min_bit = vet[0];
+	min_bit = (vet[0] >> 12) & mask(4);
+	*header = vet[0] & mask(12);
 
 	// Obtendo o tamanho do vetor original e alocando ele
 	result_size = (int)(floor(((double)size-1.0)*16.0/min_bit));

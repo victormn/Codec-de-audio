@@ -71,6 +71,15 @@ int write_bin(char const *arg, short *buffer, int size){
 
  }
 
+// -- Remove o header e salva ele numa variavel --
+//
+// Entrada: (1) vetor que ira receber o header 
+//			(2) vetor que ira receber o restante dos dados 
+//			(3) arquivo que sera separado
+//			(4) tamanho do arquivo
+//			(5) tamanho do header
+// Saida: tamanho dos dados
+
 int split_header(short **header, short **data, short * file, int fileSize, int headerSize){
 
 	int i, j;
@@ -87,6 +96,15 @@ int split_header(short **header, short **data, short * file, int fileSize, int h
 
 	return dataSize;
 }
+
+// -- Junta o header com o restante dos arquivos --
+//
+// Entrada: (1) vetor que ira receber o arquivo 
+//			(2) header 
+//			(3) restante dos dados
+//			(4) tamanho do arquivo
+//			(5) tamanho do header
+// Saida: tamanho do arquivo final
 
 int merge_header(short **file, short *header, short * data, int dataSize, int headerSize){
 
