@@ -53,18 +53,24 @@ int main(int argc, char const *argv[]){
 	// Separando o header dos dados do audio
 	short * header;
 	short * data;
+	short * diferenca1;
+	short * diferenca2;
 
 	currentSize = split_header(&header, &data, buffer, currentSize, 44);
 	currentData = data;
 
-	// Codificacao por DIFERENCA
-	if(flag_diferenca == 1){
-		//currentSize = diferenca_encoder(currentData, currentSize);
-	}
-
 	// Codificacao por CARREIRA
 	if(flag_carreira == 1){
 		//currentSize = carreira_encoder(currentData, currentSize);
+	}
+
+	// Codificacao por DIFERENCA
+	if(flag_diferenca == 1){
+
+		currentSize = diferenca_encoder(&diferenca1, currentData, currentSize);
+		currentSize = diferenca_decoder(&diferenca2, diferenca1, currentSize);
+
+		currentData = diferenca1;
 	}
 
 	// Codificacao por HUFFMAN
@@ -83,7 +89,11 @@ int main(int argc, char const *argv[]){
 	free(header);
 	free(data);
 	free(finalBuffer);
-	
+
+	if(flag_diferenca == 1){
+		free(diferenca1);
+		free(diferenca2);
+	}	
 
 // ------------------------------------------------------ JUST FOR TEST -----------------------------------------------------------
 

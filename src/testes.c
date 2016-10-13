@@ -53,7 +53,7 @@ void shift(int n, int s){
 void diferente(short * vet1, short * vet2, int size){
 
 	int i;
-
+	printf("Diferencas: \n");
 	for (i = 0; i < size; ++i){
 
 		if(vet1[i] != vet2[i]) printf("%d ", i);

@@ -78,6 +78,16 @@ short bit1_to_comp2(short a, int min_bit){
 
 }
 
+// -- Retorna o tamanho do vetor comprimido com o merge --
+//
+// Entrada: (1) vetor
+//			(2) tamanho do vetor
+// Saida: tamanho comprimido
+
+int size_of_result(short *v, int size){
+	return log_2((double)valor_maximo(v, size));
+}
+
 // -- Merge de elementos de um vetor com base no numero minimo para representa-los --
 //
 // Entrada: (1) vetor
@@ -93,23 +103,23 @@ short * merge_bits(short * vet, int size, short header){
 
 	// Calcula o valor minimo de bits que pode ser usado para
 	//representar o maior elemento do vetor
-	int valormaximo = valor_maximo(vet, size);
-	min_bit = log_2((double)valormaximo);
+	min_bit = size_of_result(vet, size);
 
 	// Alocando o vetor de saida
-	double result_size = ceil(size*min_bit/16.0) + 1.0;
+	double result_size = ceil(size*min_bit/16.0) + 2.0;
 	result = (short*) malloc (sizeof(short)*result_size);
 
 	// Header: numero minimo de bits necessario pra representar um elemento 
 	//+ header do parametro
-	result[0] = (min_bit << 12) | header;
+	result[0] = min_bit-1;
+	result[1] = header;
 
 	// Se o vaor minimo de bits que pode ser usado para
 	//representar = 16, nao ha o que comprimir
 	if (min_bit == 16) {
 		
 		for (i = 0; i < size; i++)
-			result[i+1] = vet[i];
+			result[i+2] = vet[i];
 
 	}else{
 
@@ -119,7 +129,7 @@ short * merge_bits(short * vet, int size, short header){
 
 		// De dois em dois elementos, transforma ambos em 32 bits,
 		//faz a operacao de OR entre ambos e salva no vetor de resposta
-		for (i = 1, j = 1; i < size; i++){
+		for (i = 1, j = 2; i < size; i++){
 
 			merge = (current << 16) |  (comp2_to_bit1(vet[i],min_bit) << (32 - min_bit - n_current));
 
@@ -161,27 +171,27 @@ short * extend_bits(short * vet, int size, short *header){
 	long long merge, current;
 
 	// Obtendo o numero minimo de bits que o maior elemento pode ser representado
-	min_bit = (vet[0] >> 12) & mask(4);
-	*header = vet[0] & mask(12);
+	min_bit = vet[0] + 1;
+	*header = vet[1];
 
 	// Obtendo o tamanho do vetor original e alocando ele
-	result_size = (int)(floor(((double)size-1.0)*16.0/min_bit));
+	result_size = (int)(floor(((double)size-2.0)*16.0/min_bit));
 	result = (short*) malloc (sizeof(short)*result_size);
 
 	if(min_bit == 16) {
 
 		for(i = 0; i < result_size; i++)
-			result[i] = vet[i+1];
+			result[i] = vet[i+2];
 	}else{
 
 		// Atribuindo valores iniciais
-		aux = (vet[1] >> (16 - min_bit)) & mask(min_bit);
+		aux = (vet[2] >> (16 - min_bit)) & mask(min_bit);
 		result[0] = bit1_to_comp2(aux, min_bit);
-		current = vet[1] << 16 + min_bit;
+		current = vet[2] << 16 + min_bit;
 		n_current = 16 - min_bit;
 
 		// Obtendo os valores em 16 bits
-		for(i = 1, j = 2; i < result_size; i++, j++){
+		for(i = 1, j = 3; i < result_size; i++, j++){
 
 			merge = (current) |  ((vet[j] << (16 - n_current)) & mask(32 - n_current));
 			aux = (merge >> (32 - min_bit)) & mask(min_bit);
