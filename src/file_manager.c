@@ -70,3 +70,36 @@ int write_bin(char const *arg, short *buffer, int size){
   	return 0;
 
  }
+
+int split_header(short **header, short **data, short * file, int fileSize, int headerSize){
+
+	int i, j;
+	int dataSize = fileSize - headerSize;
+
+	*header = (short*) malloc(sizeof(short)*headerSize);
+	*data = (short*) malloc(sizeof(short)*dataSize);
+
+	for(i = 0; i<headerSize; i++)
+		*(*header+i) = file[i];	
+
+	for(i = headerSize, j = 0; i<fileSize; i++, j++)
+		*(*data+j) = file[i];
+
+	return dataSize;
+}
+
+int merge_header(short **file, short *header, short * data, int dataSize, int headerSize){
+
+	int i, j;
+	int fileSize = dataSize + headerSize;
+
+	*file = (short*) malloc(sizeof(short)*fileSize);
+
+	for(i = 0; i<headerSize; i++)
+		*(*file+i) = header[i];	
+
+	for(i = headerSize, j = 0; i<fileSize; i++, j++)
+		*(*file+i) = data[j];
+
+	return fileSize;
+}

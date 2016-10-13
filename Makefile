@@ -18,5 +18,8 @@ clean:
 	@rm -f ./obj/*.o encoder
 	@find -name "*~" | xargs rm -rf
 
-memorycheck:
-	@valgrind ./encoder
+memory:
+	@valgrind ./encoder -d -c -h files/inputs/sample1.wav files/output/output.wav
+
+run:
+	@./encoder -d -c -h files/inputs/sample1.wav files/output/output.wav

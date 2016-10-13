@@ -22,8 +22,8 @@
 
 int main(int argc, char const *argv[]){
 	
-	int fileSize = 0;
-    short *buffer;
+	int currentSize = 0;
+    short *buffer, *currentData;
     int i;
 
 	// Flags para saber quais metodos de codificacao serao utilizados
@@ -45,25 +45,45 @@ int main(int argc, char const *argv[]){
 	}
 
 	// Lendo o arquivo WAVE (penultimo parametro)
-	fileSize = read_wave(argv[argc-2], &buffer);
+	currentSize = read_wave(argv[argc-2], &buffer);
+
+	// Current data sempre ira receber os valores do vetor de short que sera trabalhado
+	currentData = buffer;
+
+	// Separando o header dos dados do audio
+	short * header;
+	short * data;
+
+	currentSize = split_header(&header, &data, buffer, currentSize, 44);
+	currentData = data;
 
 	// Codificacao por DIFERENCA
 	if(flag_diferenca == 1){
-		//fileSize = diferenca_encoder(&buffer, fileSize);
+		//currentSize = diferenca_encoder(currentData, currentSize);
 	}
 
 	// Codificacao por CARREIRA
 	if(flag_carreira == 1){
-		//fileSize = carreira_encoder(&buffer, fileSize);
+		//currentSize = carreira_encoder(currentData, currentSize);
 	}
 
 	// Codificacao por HUFFMAN
 	if(flag_huffman == 1){
-		//fileSize = huffman_encoder(&buffer, fileSize);
+		//currentSize = huffman_encoder(currentData, currentSize);
 	}
 
+	// Juntandoo header com os dados do audio comprimido
+	short * finalBuffer;
+	currentSize = merge_header(&finalBuffer, header, currentData, currentSize, 44);
+
 	// Escrevendo a stream de dados no arquivo passado como ultimo parametro
-	write_bin(argv[argc-1], buffer, fileSize);
+	write_bin(argv[argc-1], finalBuffer, currentSize);
+
+	free(buffer);
+	free(header);
+	free(data);
+	free(finalBuffer);
+	
 
 // ------------------------------------------------------ JUST FOR TEST -----------------------------------------------------------
 
@@ -163,6 +183,24 @@ int main(int argc, char const *argv[]){
 	contador_bit_a_bit(g, 16);
 	contador_bit_a_bit(h, 16);
 */
+	// --------------------- TESTANDO TIRAR HEADER -------------------------------------------------------------------------------
+
+
+/*	short teste[16] = {10, 50, 40, 30, 80, 100, 160, 40, 70, 80, 90, 70, 150, 20, 10 , 30};
+
+	short *header_test;
+	short *data_test;
+
+	int size_test = split_header(&header_test, &data_test, teste, 16, 4);
+
+	printf("header\n");
+	for(i = 0; i<4; i++)
+		printf("%d\n", header_test[i]);
+
+	printf("data\n");
+	for(i = 0; i<size_test; i++)
+		printf("%d\n", data_test[i]);*/
+
 
 
 	return 0;
