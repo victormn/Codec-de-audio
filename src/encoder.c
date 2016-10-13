@@ -70,7 +70,7 @@ int main(int argc, char const *argv[]){
 		currentSize = diferenca_encoder(&diferenca1, currentData, currentSize);
 		currentSize = diferenca_decoder(&diferenca2, diferenca1, currentSize);
 
-		currentData = diferenca1;
+		currentData = diferenca2;
 	}
 
 	// Codificacao por HUFFMAN
