@@ -103,7 +103,7 @@ short * merge_bits(short * vet, int size, short header){
 
 	// Calcula o valor minimo de bits que pode ser usado para
 	//representar o maior elemento do vetor
-	min_bit = size_of_result(vet, size);
+	min_bit = size_of_result(vet, size+1);
 
 	// Alocando o vetor de saida
 	double result_size = ceil(size*min_bit/16.0) + 2.0;

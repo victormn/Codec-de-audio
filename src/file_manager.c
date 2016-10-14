@@ -28,7 +28,7 @@ int read_wave(char const *arg, short **buffer) {
 	rewind (f);
 
     // Alocando um buffer para armazenar os dados do arquivo
-	*buffer = (short*) malloc (sizeof(short)*fileSize);
+	*buffer = (short*) calloc(fileSize, sizeof(short));
 	if (*buffer == NULL) {
 	    printf("! Erro !\n\nMemoria nao alocada para o buffer\n");
 	    return EXIT_FAILURE;

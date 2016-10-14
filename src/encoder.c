@@ -23,7 +23,7 @@
 int main(int argc, char const *argv[]){
 	
 	int currentSize = 0;
-    short *buffer, *currentData;
+    short *buffer, *currentData, *header, *data, *diferenca1, *diferenca2;
     int i;
 
 	// Flags para saber quais metodos de codificacao serao utilizados
@@ -51,11 +51,6 @@ int main(int argc, char const *argv[]){
 	currentData = buffer;
 
 	// Separando o header dos dados do audio
-	short * header;
-	short * data;
-	short * diferenca1;
-	short * diferenca2;
-
 	currentSize = split_header(&header, &data, buffer, currentSize, 44);
 	currentData = data;
 
@@ -85,6 +80,9 @@ int main(int argc, char const *argv[]){
 	// Escrevendo a stream de dados no arquivo passado como ultimo parametro
 	write_bin(argv[argc-1], finalBuffer, currentSize);
 
+	// Ver se ha alguma diferenca
+	//diferente(buffer, finalBuffer, currentSize);
+
 	free(buffer);
 	free(header);
 	free(data);
@@ -93,7 +91,9 @@ int main(int argc, char const *argv[]){
 	if(flag_diferenca == 1){
 		free(diferenca1);
 		free(diferenca2);
-	}	
+	}
+
+
 
 // ------------------------------------------------------ JUST FOR TEST -----------------------------------------------------------
 

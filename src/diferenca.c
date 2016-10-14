@@ -16,7 +16,7 @@ int diferenca_encoder(short ** result, short * buffer, int size){
 	int i, resultSize = 0;
 	short DCValue;
 
-	short *aux = (short*) malloc (sizeof(short)*size);
+	short *aux = (short*) calloc (size, sizeof(short));
 
 	DCValue = buffer[0];
 
@@ -32,7 +32,6 @@ int diferenca_encoder(short ** result, short * buffer, int size){
 
 	resultSize = ceil(size*min_bit/16.0) + 1.0;
 
-	*result = (short*) malloc (sizeof(short)*resultSize);
 	*result = merge_bits(aux, size-1, DCValue);
 
 	free(aux);
@@ -56,10 +55,9 @@ int diferenca_decoder(short ** result, short * buffer, int size){
 	resultSize = (int)(floor(((double)size-2.0)*16.0/min_bit));
 	resultSize++;
 
-	short *aux = (short*) malloc (sizeof(short)*resultSize);
-	aux = extend_bits(buffer, size, &DCValue);
+	short *aux = extend_bits(buffer, size, &DCValue);
 
-	*result = (short*) malloc (sizeof(short)*resultSize);
+	*result = (short*) calloc (resultSize, sizeof(short));
 
 	*(*result) = DCValue;
 
