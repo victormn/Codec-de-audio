@@ -61,3 +61,10 @@ void diferente(short * vet1, short * vet2, int size){
 	printf("\n");
 
 }
+
+void print_vetor(short * vet, int size){
+	int i;
+	for(i=0; i<size; i++)
+		printf("%d ", vet[i]);
+	printf("\n\n");
+}

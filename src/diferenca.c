@@ -11,61 +11,41 @@
 //			(2) tamanho do vetor
 // Saida: vetor com as diferencas 2 a 2
 
-int diferenca_encoder(short ** result, short * buffer, int size){
+short * diferenca_encoder(short * buffer, int size){
 
-	int i, resultSize = 0;
-	short DCValue;
+	int i;
 
-	short *aux = (short*) calloc (size, sizeof(short));
+	short *result = (short*) calloc (size, sizeof(short));
 
-	DCValue = buffer[0];
-
-	aux[0] = DCValue - buffer[1];
+	result[0] = buffer[0];
 
 	for (i=1; i<size; i++){
 
-		aux[i-1] = buffer[i-1] - buffer[i];
+		result[i] = buffer[i-1] - buffer[i];
 
 	}
 
-	int min_bit = size_of_result(aux, size);
-
-	resultSize = ceil(size*min_bit/16.0) + 1.0;
-
-	*result = merge_bits(aux, size-1, DCValue);
-
-	free(aux);
-
-	return resultSize;
+	return result;
 }
 
-// -- Faz a diferenca 2 a 2 entre os elementos de um vetor --
+// -- Desfaz a diferenca 2 a 2 entre os elementos de um vetor --
 //
 // Entrada: (1) vetor
 //			(2) tamanho do vetor
-// Saida: vetor com as diferencas 2 a 2
+// Saida: vetor com os elementos originais
 
-int diferenca_decoder(short ** result, short * buffer, int size){
+short * diferenca_decoder(short * buffer, int size){
 
-	int i, resultSize = 0;
-	short DCValue;
+	int i;
 
-	int min_bit = buffer[0];
-	min_bit++;
-	resultSize = (int)(floor(((double)size-2.0)*16.0/min_bit));
-	resultSize++;
+	short *result = (short*) calloc (size, sizeof(short));
 
-	short *aux = extend_bits(buffer, size, &DCValue);
+	result[0] = buffer[0];
 
-	*result = (short*) calloc (resultSize, sizeof(short));
+	for (i=1; i<size; i++){
 
-	*(*result) = DCValue;
-
-	for (i=1; i<resultSize; i++){
-		*(*result+i) = *(*result+(i-1)) - aux[i-1];
+		result[i] = result[i-1] - buffer[i];
 	}
 
-	free(aux);
-
-	return resultSize;
+	return result;
 }

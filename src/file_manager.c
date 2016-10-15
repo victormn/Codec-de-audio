@@ -121,3 +121,30 @@ int merge_header(short **file, short *header, short * data, int dataSize, int he
 
 	return fileSize;
 }
+
+int merge_compress_flags(short **result, short *file, int size, int d, int c, int h){
+
+	int i;
+
+	*result = (short*) calloc((size+1), sizeof(short));
+
+	*(*result) = (d << 2) | (c << 1) | h;
+
+	for (i = 0; i<size; i++)
+		*(*result+i+1) = file[i];
+
+	return size+1;
+}
+
+int remove_compress_flags(short **result, short *file, int size){
+
+	int i;
+
+	*result = (short*) calloc((size-1), sizeof(short));
+
+	for (i = 1; i<size; i++)
+		*(*result+i-1) = file[i];
+
+	return size-1;
+}
+

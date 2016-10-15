@@ -8,30 +8,28 @@
 
 #include "file_manager.h"
 #include "bit_manager.h"
-// #include "carreira.h"
+#include "carreira.h"
 #include "diferenca.h"
-// #include "huffman.h"
+//#include "huffman.h"
 
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #include "testes.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include <math.h>
-
 int main(int argc, char const *argv[]){
 	
-	int currentSize = 0;
-    short *buffer, *currentData, *header, *data, *diferenca1, *diferenca2;
-    int i;
+	int currentSize = 0, originalSize = 0, i;
+    short *buffer, *currentData, *header, *data, *diferenca, *carreira1, *carreira2, *huffman, *headerMerged, *flagMerged, *compress;
 
 	// Flags para saber quais metodos de codificacao serao utilizados
 	int flag_diferenca = 0, flag_carreira = 0, flag_huffman = 0;
 
 	// Verificando parametros de entrada
 	if(argc < 3 || argc > 6){
-		printf("! Erro ! Numero de argumentos errado !\n\nUtilize: ./encoder -d -c -h <entrada.wav> <saida.bin>\n");
+		printf("! Erro ! Numero de argumentos errado !\n\nUtilize: ./encode -d -c -h <entrada.wav> <saida.bin>\n");
 		printf("As flags -d -c -h sao opcionais e podem ser inseridas em qualquer ordem\n");
 		return EXIT_FAILURE;
 	}
@@ -45,7 +43,8 @@ int main(int argc, char const *argv[]){
 	}
 
 	// Lendo o arquivo WAVE (penultimo parametro)
-	currentSize = read_wave(argv[argc-2], &buffer);
+	originalSize = read_wave(argv[argc-2], &buffer);
+	currentSize = originalSize;
 
 	// Current data sempre ira receber os valores do vetor de short que sera trabalhado
 	currentData = buffer;
@@ -54,46 +53,63 @@ int main(int argc, char const *argv[]){
 	currentSize = split_header(&header, &data, buffer, currentSize, 44);
 	currentData = data;
 
-	// Codificacao por CARREIRA
-	if(flag_carreira == 1){
-		//currentSize = carreira_encoder(currentData, currentSize);
-	}
-
 	// Codificacao por DIFERENCA
 	if(flag_diferenca == 1){
 
-		currentSize = diferenca_encoder(&diferenca1, currentData, currentSize);
-		currentSize = diferenca_decoder(&diferenca2, diferenca1, currentSize);
+		diferenca = diferenca_encoder(currentData, currentSize);
+		currentData = diferenca;
 
-		currentData = diferenca2;
+	}
+
+	// Codificacao por CARREIRA
+	if(flag_carreira == 1){
+
+		currentSize = carreira_encoder(&carreira1, currentData, currentSize);
+		currentData = carreira1;
+
+		currentSize = carreira_encoder(&carreira2, currentData, currentSize);
+		currentData = carreira2;
+
 	}
 
 	// Codificacao por HUFFMAN
 	if(flag_huffman == 1){
-		//currentSize = huffman_encoder(currentData, currentSize);
+
 	}
 
+	// Comprimindo o arquivo
+	currentSize = merge_bits(&compress, currentData, currentSize);
+	currentData = compress;
+
 	// Juntandoo header com os dados do audio comprimido
-	short * finalBuffer;
-	currentSize = merge_header(&finalBuffer, header, currentData, currentSize, 44);
+	currentSize = merge_header(&headerMerged, header, currentData, currentSize, 44);
+	currentData = headerMerged;
+
+	//Colocando quais metodos de compressao foram utilizados
+	currentSize = merge_compress_flags(&flagMerged, currentData, currentSize, flag_diferenca, flag_carreira, flag_huffman);
+	currentData = flagMerged;
 
 	// Escrevendo a stream de dados no arquivo passado como ultimo parametro
-	write_bin(argv[argc-1], finalBuffer, currentSize);
+	write_bin(argv[argc-1], currentData, currentSize);
 
-	// Ver se ha alguma diferenca
-	//diferente(buffer, finalBuffer, currentSize);
+	printf("Comprimido com sucesso!\nTaxa de Compressao = %.2f%%\n", (1.0 - ((double)currentSize)/((double)originalSize))*100.0);
 
 	free(buffer);
 	free(header);
 	free(data);
-	free(finalBuffer);
+	free(headerMerged);
+	free(flagMerged);
+	free(compress);
 
-	if(flag_diferenca == 1){
-		free(diferenca1);
-		free(diferenca2);
+	if(flag_diferenca == 1) free(diferenca);
+
+	if(flag_carreira == 1){
+		free(carreira1);
+		free(carreira2);
 	}
 
-
+	//if(flag_carreira == 1) free(huffman);
+	
 
 // ------------------------------------------------------ JUST FOR TEST -----------------------------------------------------------
 
