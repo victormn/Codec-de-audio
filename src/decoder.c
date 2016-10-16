@@ -21,8 +21,8 @@
 
 int main(int argc, char const *argv[]){
 	
-	int currentSize = 0;
-    short *buffer, *currentData, *header, *data, *diferenca, *carreira, *huffman, *headerMerged, *flagRemoved, *decompress;
+	int currentSize = 0, num_channels = 0;
+    short *buffer, *currentData, *header, *data, *diferenca, *carreira, *headerMerged, *flagRemoved, *decompress, *mergeChannels;
 
 	// Flags para saber quais metodos de codificacao serao utilizados
 	int flag_diferenca = 0, flag_carreira = 0, flag_huffman = 0;
@@ -46,7 +46,7 @@ int main(int argc, char const *argv[]){
 	currentData = flagRemoved;
 
 	// Separando o header dos dados do audio
-	currentSize = split_header(&header, &data, currentData, currentSize, 44);
+	currentSize = split_header(&header, &data, currentData, currentSize, 22);
 	currentData = data;
 
 	// Descomprimindo o arquivo
@@ -74,8 +74,15 @@ int main(int argc, char const *argv[]){
 
 	}
 
+	// Considerando o numero de canais
+	num_channels = buffer[12];
+	if(num_channels == 2){
+		mergeChannels = merge_channels(currentData, currentSize);
+		currentData = mergeChannels;
+	}
+
 	// Juntandoo header com os dados do audio comprimido
-	currentSize = merge_header(&headerMerged, header, currentData, currentSize, 44);
+	currentSize = merge_header(&headerMerged, header, currentData, currentSize, 22);
 	currentData = headerMerged;
 
 	// Escrevendo a stream de dados no arquivo passado como ultimo parametro
@@ -89,6 +96,7 @@ int main(int argc, char const *argv[]){
 	free(headerMerged);
 	free(flagRemoved);
 	free(decompress);
+	free(mergeChannels);
 
 	if(flag_diferenca == 1) free(diferenca);
 

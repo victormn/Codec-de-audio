@@ -165,3 +165,48 @@ int remove_compress_flags(short **result, short *file, int size){
 	return size-1;
 }
 
+// -- Divide o vetor em: primeira metade = primeiro canal; segunda metade = segundo canal --
+//
+// Entrada: (1) vetor 
+//			(2) tamanho do vetor
+// Saida: vetor resultante
+
+short * split_channels(short *file, int size){
+
+	int i, j;
+
+	short * result = (short*) calloc(size, sizeof(short));
+
+	for(i=0, j=0; i < (size/2); i++, j+=2)
+		result[i] = file[j];
+	
+
+	for(i=(size/2), j=1; i < size; i++, j+=2)
+		result[i] = file[j];
+
+	return result;
+}
+
+// -- Junta os canais do vetor, colocandos-os alternadamente em seus elementos --
+//
+// Entrada: (1) vetor 
+//			(2) tamanho do vetor
+// Saida: vetor resultante
+
+short * merge_channels(short *file, int size){
+
+	int i, j;
+
+	short * result = (short*) calloc(size, sizeof(short));
+
+	for(i=0, j=0; i < (size/2); i++, j+=2)
+		result[j] = file[i];
+	
+
+	for(i=(size/2), j=1; i < size; i++, j+=2)
+		result[j] = file[i];
+
+	return result;
+}
+
+

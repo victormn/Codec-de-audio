@@ -80,7 +80,7 @@ void print_vetor(short * vet, int size){
 
 
 	for(i=0; i<size; i++){
-		printf("%x ", vet[i]);
+		printf("%d ", vet[i]);
 		if(vet[i] == max) pos = i;			
 	}
 

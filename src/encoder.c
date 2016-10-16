@@ -21,8 +21,8 @@
 
 int main(int argc, char const *argv[]){
 	
-	int currentSize = 0, originalSize = 0, i;
-    short *buffer, *currentData, *header, *data, *diferenca, *carreira, *huffman, *headerMerged, *flagMerged, *compress;
+	int currentSize = 0, originalSize = 0, num_channels = 0, i;
+    short *buffer, *currentData, *header, *data, *splitChannels, *diferenca, *carreira, *headerMerged, *flagMerged, *compress;
 
 	// Flags para saber quais metodos de codificacao serao utilizados
 	int flag_diferenca = 0, flag_carreira = 0, flag_huffman = 0;
@@ -50,8 +50,15 @@ int main(int argc, char const *argv[]){
 	currentData = buffer;
 
 	// Separando o header dos dados do audio
-	currentSize = split_header(&header, &data, buffer, currentSize, 44);
+	currentSize = split_header(&header, &data, buffer, currentSize, 22);
 	currentData = data;
+
+	// Considerando o numero de canais
+	num_channels = buffer[11];
+	if(num_channels == 2){
+		splitChannels = split_channels(currentData, currentSize);
+		currentData = splitChannels;
+	}
 
 	// Codificacao por DIFERENCA
 	if(flag_diferenca == 1){
@@ -79,7 +86,7 @@ int main(int argc, char const *argv[]){
 	currentData = compress;
 
 	// Juntandoo header com os dados do audio comprimido
-	currentSize = merge_header(&headerMerged, header, currentData, currentSize, 44);
+	currentSize = merge_header(&headerMerged, header, currentData, currentSize, 22);
 	currentData = headerMerged;
 
 	//Colocando quais metodos de compressao foram utilizados
@@ -97,6 +104,7 @@ int main(int argc, char const *argv[]){
 	free(headerMerged);
 	free(flagMerged);
 	free(compress);
+	free(splitChannels);
 
 	if(flag_diferenca == 1) free(diferenca);
 

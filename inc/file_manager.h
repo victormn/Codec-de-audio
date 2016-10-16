@@ -7,5 +7,7 @@ int split_header(short **header, short **data, short * file, int fileSize, int h
 int merge_header(short **file, short *header, short * data, int dataSize, int headerSize);
 int merge_compress_flags(short **result, short *file, int size, int d, int c, int h);
 int remove_compress_flags(short **result, short *file, int size);
+short * split_channels(short *file, int size);
+short * merge_channels(short *file, int size);
 
 #endif
