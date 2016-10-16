@@ -22,7 +22,7 @@
 int main(int argc, char const *argv[]){
 	
 	int currentSize = 0;
-    short *buffer, *currentData, *header, *data, *diferenca, *carreira1, *carreira2, *huffman, *headerMerged, *flagRemoved, *decompress;
+    short *buffer, *currentData, *header, *data, *diferenca, *carreira, *huffman, *headerMerged, *flagRemoved, *decompress;
 
 	// Flags para saber quais metodos de codificacao serao utilizados
 	int flag_diferenca = 0, flag_carreira = 0, flag_huffman = 0;
@@ -61,11 +61,8 @@ int main(int argc, char const *argv[]){
 	// Decodificar por CARREIRA
 	if(flag_carreira == 1){
 
-		currentSize = carreira_decoder(&carreira1, currentData, currentSize);
-		currentData = carreira1;
-
-		currentSize = carreira_decoder(&carreira2, currentData, currentSize);
-		currentData = carreira2;
+		currentSize = carreira_decoder(&carreira, currentData, currentSize);
+		currentData = carreira;
 
 	}
 
@@ -95,10 +92,7 @@ int main(int argc, char const *argv[]){
 
 	if(flag_diferenca == 1) free(diferenca);
 
-/*	if(flag_carreira == 1){
-		free(carreira1);
-		free(carreira2);
-	}*/
+	if(flag_carreira == 1) free(carreira);
 
 	//if(flag_huffman == 1) free(huffman);
 

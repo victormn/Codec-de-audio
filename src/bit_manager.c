@@ -16,7 +16,7 @@
 short valor_maximo(short * vet, int size){
 
 	int i;
-	short maior = 0;
+	int maior = 0;
 
 	for(i=0; i<size; i++){
 
@@ -24,7 +24,6 @@ short valor_maximo(short * vet, int size){
 			maior = abs(vet[i]);
 
 	}
-
 	return maior;
 }
 
@@ -169,7 +168,7 @@ int extend_bits(short ** result, short * vet, int size){
 
 	// Obtendo o tamanho do vetor original e alocando ele
 	result_size = (int)(floor(((double)size-1.0)*16.0/min_bit));
-	*result = (short*) malloc (sizeof(short)*result_size);
+	*result = (short*) calloc (result_size+1, sizeof(short));
 
 	if(min_bit == 16) {
 

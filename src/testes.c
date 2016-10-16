@@ -50,6 +50,12 @@ void shift(int n, int s){
 
 }
 
+// -- Imprime os elementos diferentes entre 2 vetores --
+//
+// Entrada: (1) vetor 1
+//			(2) vetor 2
+//			(3) tamanho dos vetores
+
 void diferente(short * vet1, short * vet2, int size){
 
 	int i;
@@ -62,9 +68,21 @@ void diferente(short * vet1, short * vet2, int size){
 
 }
 
+// -- Imprime um vetor indicando seu valor maximo e a posicao em que se encontra --
+//
+// Entrada: (1) vetor 
+//			(2) tamanho dos vetores
+
 void print_vetor(short * vet, int size){
-	int i;
-	for(i=0; i<size; i++)
-		printf("%d ", vet[i]);
-	printf("\n\n");
+	int i, max, pos = 0;
+
+	max = valor_maximo(vet, size);
+
+
+	for(i=0; i<size; i++){
+		printf("%x ", vet[i]);
+		if(vet[i] == max) pos = i;			
+	}
+
+	printf("\nvalor maximo = %d\npos max = %d\n\n", max, pos);
 }

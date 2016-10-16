@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// -- Leitura de um arquivo WAVE --
+// -- Leitura de um arquivo --
 //
 // Entrada: (1) nome do arquivo a ser lido 
 //			(2) buffer para armazena-lo
@@ -35,15 +35,15 @@ int read_wave(char const *arg, short **buffer) {
 	}
 
     // Lendo o arquivo
-	result = fread (*buffer, 1, fileSize, f);
-	if (result != fileSize) {
+	result = fread (*buffer, 2, fileSize, f);
+	if (result != fileSize/2) {
 		printf("! Erro !\n\nBuffer nao recebeu o arquivo corretamente\n");
 	    return EXIT_FAILURE;
 	}
 
     fclose(f);
 
-    return fileSize;
+    return result;
 }
 
 // -- Escreve uma stream de dados em um arquivo de entrada --
@@ -64,7 +64,7 @@ int write_bin(char const *arg, short *buffer, int size){
 	    return EXIT_FAILURE;
     }
 
-    fwrite (buffer , sizeof(char), size, f);
+    fwrite (buffer , 2, size, f);
   	fclose (f);
 
   	return 0;
@@ -85,8 +85,8 @@ int split_header(short **header, short **data, short * file, int fileSize, int h
 	int i, j;
 	int dataSize = fileSize - headerSize;
 
-	*header = (short*) malloc(sizeof(short)*headerSize);
-	*data = (short*) malloc(sizeof(short)*dataSize);
+	*header = (short*) calloc(headerSize, sizeof(short));
+	*data = (short*) calloc(dataSize+1, sizeof(short));
 
 	for(i = 0; i<headerSize; i++)
 		*(*header+i) = file[i];	
@@ -122,6 +122,16 @@ int merge_header(short **file, short *header, short * data, int dataSize, int he
 	return fileSize;
 }
 
+// -- Adiciona flags que indicam o tipo de codificacao utilizada --
+//
+// Entrada: (1) vetor resultante
+//			(2) vetor
+//			(3) tamanho do vetor
+//			(4) flag da codificacao por diferenca
+//			(5) flag da codificacao por carreira
+//			(6) flag da codificacao por huffman
+// Saida: tamanho do resultado
+
 int merge_compress_flags(short **result, short *file, int size, int d, int c, int h){
 
 	int i;
@@ -135,6 +145,13 @@ int merge_compress_flags(short **result, short *file, int size, int d, int c, in
 
 	return size+1;
 }
+
+// -- Remove flags que indicam o tipo de codificacao utilizada --
+//
+// Entrada: (1) vetor resultante
+//			(2) vetor
+//			(3) tamanho do vetor
+// Saida: tamanho do resultado
 
 int remove_compress_flags(short **result, short *file, int size){
 
