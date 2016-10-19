@@ -86,3 +86,16 @@ void print_vetor(short * vet, int size){
 
 	printf("\nvalor maximo = %d\npos max = %d\n\n", max, pos);
 }
+
+
+void print_arvore(node *arvore, int size){
+
+	int i;
+
+	for(i=0; i<size; i++){
+
+		printf("simbolo: %d id: %d pai: %d freq: %f edge: %d\n", arvore[i].symbol, arvore[i].id, arvore[i].parent, arvore[i].frequency, arvore[i].edge);
+	}
+	printf("\n");
+
+}

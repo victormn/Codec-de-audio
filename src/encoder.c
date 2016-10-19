@@ -77,7 +77,7 @@ int main(int argc, char const *argv[]){
 	}
 
 	// Codificacao por HUFFMAN
-	if(flag_huffman != 1){
+	if(flag_huffman == 1){
 
 		currentSize = huffman_encoder(&huffman, currentData, currentSize);
 		currentData = huffman;
@@ -112,10 +112,10 @@ int main(int argc, char const *argv[]){
 
 	if(flag_carreira == 1) free(carreira);
 
-	if(flag_huffman != 1) free(huffman);
+	if(flag_huffman == 1) free(huffman);
 
 
-	int x;
+/*	int x;
 
 	short file[10] = {1, 2, 2, 3, 3, 3, 4, 4, 4, 4};
 
@@ -125,10 +125,12 @@ int main(int argc, char const *argv[]){
 
 	int newsize = huffman_encoder(&test_result, file, size);
 
+	printf("newsize = %d\n", newsize);
+
 	for(x=0; x<newsize; x++){
-		printf("%d ", test_result[i]);
+		printf("%d ", test_result[x]);
 	}
-	printf("\n");
+	printf("\n");*/
 
 	return 0;
 }

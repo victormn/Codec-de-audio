@@ -50,18 +50,18 @@ int num_simbolos(short *buffer, int size);
 
 int huffman_encoder(short ** result, short *buffer, int size);
 
-short * merge_data_w_header(short* data, short *vetor, short *pai, int num_elementos, int data_size);
+int merge_data_w_header(short* data, short *vetor, short *pai, int num_elementos, int data_size, short ** result, int size, int n_bits);
 
-int merge_datas(short* file, short ** result, int size);
+int merge_datas(short* file, short ** result, int size, int *n_bits);
 
 void create_header(node * arvore, int num_elementos, int ** vetor, int ** pai);
 
-void expand_data_n_header(short * file, int **vetor, int **pai, int **data, int file_size, int *data_size, int *num_elementos);
-
-void print_arvore(node *arvore, int size);
+void expand_data_n_header(short * file, short **vetor, short **pai, short **data, int file_size, int *n_bits, int *num_elementos, int *original_size);
 
 int next_bit(short *entrada, int i, int j);
 
-short busca_simbolo(short *entrada, short *vetor, int pos, int nsym, int i, int j, int bit, int *pai);
+void busca_simbolo(short *entrada, short *vetor, short *pai, int pos, int i, int j, int bit, int result_size, int n_bits, int aux_n_bits, short ** result);
+
+int huffman_decoder(short ** result, short *file, int file_size);
 
 #endif

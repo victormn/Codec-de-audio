@@ -10,7 +10,7 @@
 #include "bit_manager.h"
 #include "carreira.h"
 #include "diferenca.h"
-//#include "huffman.h"
+#include "huffman.h"
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #include "testes.h"
@@ -22,7 +22,7 @@
 int main(int argc, char const *argv[]){
 	
 	int currentSize = 0, num_channels = 0;
-    short *buffer, *currentData, *header, *data, *diferenca, *carreira, *headerMerged, *flagRemoved, *decompress, *mergeChannels;
+    short *buffer, *currentData, *header, *data, *diferenca, *carreira, *huffman, *headerMerged, *flagRemoved, *decompress, *mergeChannels;
 
 	// Flags para saber quais metodos de codificacao serao utilizados
 	int flag_diferenca = 0, flag_carreira = 0, flag_huffman = 0;
@@ -56,6 +56,8 @@ int main(int argc, char const *argv[]){
 	// Decodificar por HUFFMAN
 	if(flag_huffman == 1){
 
+		currentSize = huffman_decoder(&huffman, currentData, currentSize);
+		currentData = carreira;
 	}
 
 	// Decodificar por CARREIRA
@@ -102,7 +104,7 @@ int main(int argc, char const *argv[]){
 
 	if(flag_carreira == 1) free(carreira);
 
-	//if(flag_huffman == 1) free(huffman);
+	if(flag_huffman == 1) free(huffman);
 
 	return 0;
 }
