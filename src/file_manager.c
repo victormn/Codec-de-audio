@@ -209,4 +209,3 @@ short * merge_channels(short *file, int size){
 	return result;
 }
 
-

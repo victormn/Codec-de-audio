@@ -10,7 +10,7 @@
 #include "bit_manager.h"
 #include "carreira.h"
 #include "diferenca.h"
-//#include "huffman.h"
+#include "huffman.h"
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #include "testes.h"
@@ -22,7 +22,7 @@
 int main(int argc, char const *argv[]){
 	
 	int currentSize = 0, originalSize = 0, num_channels = 0, i;
-    short *buffer, *currentData, *header, *data, *splitChannels, *diferenca, *carreira, *headerMerged, *flagMerged, *compress;
+    short *buffer, *currentData, *header, *data, *splitChannels, *diferenca, *carreira, *huffman, *headerMerged, *flagMerged, *compress;
 
 	// Flags para saber quais metodos de codificacao serao utilizados
 	int flag_diferenca = 0, flag_carreira = 0, flag_huffman = 0;
@@ -77,8 +77,10 @@ int main(int argc, char const *argv[]){
 	}
 
 	// Codificacao por HUFFMAN
-	if(flag_huffman == 1){
+	if(flag_huffman != 1){
 
+		currentSize = huffman_encoder(&huffman, currentData, currentSize);
+		currentData = huffman;
 	}
 
 	// Comprimindo o arquivo
@@ -110,7 +112,23 @@ int main(int argc, char const *argv[]){
 
 	if(flag_carreira == 1) free(carreira);
 
-	//if(flag_huffman == 1) free(huffman);
+	if(flag_huffman != 1) free(huffman);
+
+
+	int x;
+
+	short file[10] = {1, 2, 2, 3, 3, 3, 4, 4, 4, 4};
+
+	int size = 10;
+
+	short * test_result;
+
+	int newsize = huffman_encoder(&test_result, file, size);
+
+	for(x=0; x<newsize; x++){
+		printf("%d ", test_result[i]);
+	}
+	printf("\n");
 
 	return 0;
 }
