@@ -52,14 +52,14 @@ int main(int argc, char const *argv[]){
 	// Descomprimindo o arquivo
 	currentSize = extend_bits(&decompress, currentData, currentSize);
 	currentData = decompress;
-
+printf("antes huffman %d\n", currentSize);
 	// Decodificar por HUFFMAN
 	if(flag_huffman == 1){
 
 		currentSize = huffman_decoder(&huffman, currentData, currentSize);
-		currentData = carreira;
+		currentData = huffman;
 	}
-
+printf("depois huffman antes carreira %d\n", currentSize);
 	// Decodificar por CARREIRA
 	if(flag_carreira == 1){
 
@@ -67,7 +67,7 @@ int main(int argc, char const *argv[]){
 		currentData = carreira;
 
 	}
-
+printf("depois carreira antes diferenca %d\n", currentSize);
 	// Decodificar por DIFERENCA
 	if(flag_diferenca == 1){
 
@@ -75,7 +75,7 @@ int main(int argc, char const *argv[]){
 		currentData = diferenca;
 
 	}
-
+printf("depois diferenca %d\n", currentSize);
 	// Considerando o numero de canais
 	num_channels = buffer[12];
 	if(num_channels == 2){
@@ -105,6 +105,21 @@ int main(int argc, char const *argv[]){
 	if(flag_carreira == 1) free(carreira);
 
 	if(flag_huffman == 1) free(huffman);
+/*
+	int x;
+
+	short file[24] = {9, 15, 33, 1, 3, 5, 3, 7, 4, 5, 1, 2, 1, 1, 1, 0, 1, 0, 0, 0, 0, 19841, 22015, -32768};
+
+	int size = 24;
+
+	short * test_result;
+
+	int newsize = huffman_decoder(&test_result, file, size);
+
+	for(x=0; x<newsize; x++){
+		printf("%d ", test_result[x]);
+	}
+	printf("\n");*/
 
 	return 0;
 }

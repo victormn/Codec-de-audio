@@ -59,7 +59,7 @@ int main(int argc, char const *argv[]){
 		splitChannels = split_channels(currentData, currentSize);
 		currentData = splitChannels;
 	}
-
+printf("antes diferenca %d\n", currentSize);
 	// Codificacao por DIFERENCA
 	if(flag_diferenca == 1){
 
@@ -67,7 +67,7 @@ int main(int argc, char const *argv[]){
 		currentData = diferenca;
 
 	}
-
+printf("depois diferenca antes carreira %d\n", currentSize);
 	// Codificacao por CARREIRA
 	if(flag_carreira == 1){
 
@@ -75,14 +75,14 @@ int main(int argc, char const *argv[]){
 		currentData = carreira;
 
 	}
-
+printf("depois carreira antes huffman %d\n", currentSize);
 	// Codificacao por HUFFMAN
 	if(flag_huffman == 1){
 
 		currentSize = huffman_encoder(&huffman, currentData, currentSize);
 		currentData = huffman;
 	}
-
+printf("depois huffman %d\n", currentSize);
 	// Comprimindo o arquivo
 	currentSize = merge_bits(&compress, currentData, currentSize);
 	currentData = compress;
@@ -113,13 +113,13 @@ int main(int argc, char const *argv[]){
 	if(flag_carreira == 1) free(carreira);
 
 	if(flag_huffman == 1) free(huffman);
+/*
 
+	int x;
 
-/*	int x;
+	short file[15] = {1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5};
 
-	short file[10] = {1, 2, 2, 3, 3, 3, 4, 4, 4, 4};
-
-	int size = 10;
+	int size = 15;
 
 	short * test_result;
 

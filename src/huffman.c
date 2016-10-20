@@ -56,7 +56,9 @@ node* ordena_nvetor(node* nos, node no, int size, int num_nos){
 	for(i=0; i<size; i++){
 		if(no.frequency < nos[i].frequency){
 			k = i;
+			
 			ordered[i] = no;
+			break;
 		}
 		else{
 			k = size;
@@ -119,7 +121,8 @@ node* cria_arvore(huffPair* ordered_hvet, int size){
 		nos = ordena_nvetor(nos, nos[size], size, num_nos);		
 
 		size++;
-		id++;		
+		id++;	
+
 	}
 
 	return nos;		
@@ -229,7 +232,7 @@ int num_simbolos(short *buffer, int size){
 	for(i=0; i<size; i++){
 		if(check[i] == 0){			// o simbolo ainda nao pode ter sido analisado para que sua frequencia seja atualizada
 			nsym++;
-			printf("n: %d\n", nsym);
+			
 			for(j=0; j<size; j++){
 				if(i != j && buffer[i] == buffer[j]){
 					check[j] = 1;
@@ -287,7 +290,7 @@ void create_huffheader(node * arvore, int num_elementos, short ** vetor, short *
 int merge_datas(short* file, short ** result, int size, int *n_bits){
 
 	short *aux;
-	int result_size, i, j, k, current_bit, ptr, shift, bit, aux_count;
+	int result_size, i, j, k, current_bit, ptr, shift, bit, aux_count, n_bits_aux;
 
 	aux = (short*) calloc (size, sizeof(short));
 
@@ -296,6 +299,7 @@ int merge_datas(short* file, short ** result, int size, int *n_bits){
 	aux_count = 16;
 	i = 0;
 	result_size = 1;
+	n_bits_aux = 0;
 
 	for(j = 1; j < size; j+=2){
 
@@ -318,7 +322,7 @@ int merge_datas(short* file, short ** result, int size, int *n_bits){
 			ptr++;
 			aux[i] = aux[i] | (bit << shift);
 			aux_count--;
-			*n_bits++;
+			n_bits_aux++;
 
 		}
 
@@ -335,6 +339,8 @@ int merge_datas(short* file, short ** result, int size, int *n_bits){
 
 	free(aux);
 
+	*n_bits = n_bits_aux;
+
 	return result_size;
 
 }
@@ -345,20 +351,21 @@ int merge_data_w_header(short* data, short *vetor, short *pai, int num_elementos
 	int size_result, i, j;
 	short *aux;
 
-	size_result = 2 + 2*(num_elementos) + data_size;
+	size_result = 4 + 2*(num_elementos) + data_size;
 
 	*result = (short*) calloc (size_result, sizeof(short));
 	aux = (short*) calloc (size_result, sizeof(short));
 
 	aux[0] = num_elementos;
-	aux[1] = size;
-	aux[2] = n_bits;
+	aux[1] = (size >> 16) & 0xffff;
+	aux[2] = size & 0xffff;
+	aux[3] = n_bits;
 
 	for(i = 0; i < num_elementos; i++)
-		aux[i+3] = vetor[i];
-	for(i = num_elementos + 3, j = 0; j < num_elementos; i++, j++)
+		aux[i+4] = vetor[i];
+	for(i = num_elementos + 4, j = 0; j < num_elementos; i++, j++)
 		aux[i] = pai[j];
-	for(i = 0, j = 3 + 2*(num_elementos); i < data_size; i++, j++)
+	for(i = 0, j = 4 + 2*(num_elementos); i < data_size; i++, j++)
 		aux[j] = data[i];
 
 	for(i=0; i<size_result; i++){
@@ -454,7 +461,6 @@ int huffman_encoder(short ** result, short *buffer, int size){
 	}
 
 	data_size = merge_datas(huff, &result1, 2*size, &n_bits);
-
 	create_huffheader(arvore, tam_arvore, &vetor, &pai);
 	result_size = merge_data_w_header(result1, vetor, pai, tam_arvore, data_size, result, size, n_bits);
 
@@ -465,22 +471,29 @@ int huffman_encoder(short ** result, short *buffer, int size){
 
 void expand_data_n_header(short * file, short **vetor, short **pai, short **data, int file_size, int *n_bits, int *num_elementos, int *original_size){
 
-	int i, j, aux, data_size;
+	int i, j, aux, data_size, n;
 
 	*num_elementos = file[0];
-	*original_size = file[1];
-	*n_bits = file[2];
+	*original_size = (file[1] << 16) | file[2];
+	*n_bits = file[3];
 
-	aux = 3 + *num_elementos + *num_elementos;
+	n = *num_elementos;
 
-	data_size = file_size - 3 - 2*(file[0]);
+	data_size = file_size - 4 - 2*(file[0]);
 
-	for(i = 0; i < *num_elementos; i++)
-		*(*vetor+i) = file[i+3];
-	for(i = *num_elementos + 3, j = 0; j < *num_elementos; i++, j++)
+	*vetor = (short*) calloc (n, sizeof(short));
+	*pai = (short*) calloc (n, sizeof(short));
+	*data = (short*) calloc (data_size, sizeof(short));
+
+	aux = 4 + 2*n;
+
+	for(i = 0; i < n; i++)
+		*(*vetor+i) = file[i+4];
+	for(i = n + 4, j = 0; j < n; i++, j++)
 		*(*pai+j) = file[i];
 	for(i = 0, j = aux; i < data_size; i++, j++)
 		*(*data+i) = file[j];
+
 }
 
 int next_bit(short *entrada, int i, int j){
@@ -489,13 +502,15 @@ int next_bit(short *entrada, int i, int j){
 
 void busca_simbolo(short *entrada, short *vetor, short *pai, int pos, int i, int j, int bit, int result_size, int n_bits, int aux_n_bits, short ** result){
 
-	if(aux_n_bits == n_bits){
+	if(aux_n_bits == n_bits+1){
 		return;
 	}
 
 	if(pai[pos] == 0){
 		*(*result+result_size) = vetor[pos];
 		result_size++;
+
+		pos = 0;
 	}
 
 	j--;
@@ -519,15 +534,17 @@ int huffman_decoder(short ** result, short *file, int file_size){
 
 
 	short *vetor, *pai, *data;
-	int n_bits, num_elementos, result_size, original_size;
+	int n_bits, num_elementos, result_size, original_size, i;
 
 	result_size = 0;
 
 	expand_data_n_header(file, &vetor, &pai, &data, file_size, &n_bits, &num_elementos, &original_size);
 
+	int data_size = file_size - 3 - 2*num_elementos;
+
 	*result = (short*) calloc (original_size, sizeof(short));
 
-	busca_simbolo(data, vetor, pai, 0, 0, 16, next_bit(data, 0, 15), 0, n_bits, 0, result);
+	busca_simbolo(data, vetor, pai, 0, 0, 15, next_bit(data, 0, 15), 0, n_bits, 0, result);
 
 	return original_size;
 
