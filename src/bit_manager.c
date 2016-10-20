@@ -206,3 +206,20 @@ int extend_bits(short ** result, short * vet, int size){
 	return result_size;
 }
 
+int short2char(short * entrada, char ** saida, int size){
+
+	int i;
+
+	*saida = (char*) calloc (size*2, sizeof(char));
+
+	for(i=0; i<size; i++){
+
+		*(*saida+i+i) = (entrada >> 8) & 0xff;
+		*(*saida+i+i+1) = (entrada) & 0xff;
+
+	}
+
+	return size*2;
+
+}
+

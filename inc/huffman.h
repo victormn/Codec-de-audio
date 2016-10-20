@@ -60,7 +60,7 @@ void expand_data_n_header(short * file, short **vetor, short **pai, short **data
 
 int next_bit(short *entrada, int i, int j);
 
-void busca_simbolo(short *entrada, short *vetor, short *pai, int pos, int i, int j, int bit, int result_size, int n_bits, int aux_n_bits, short ** result);
+short busca_simbolo(short *data, short *vetor, short *pai, int pos, int *i, int *j, int bit, int *aux_n_bits);
 
 int huffman_decoder(short ** result, short *file, int file_size);
 

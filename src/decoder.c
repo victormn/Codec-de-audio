@@ -52,14 +52,14 @@ int main(int argc, char const *argv[]){
 	// Descomprimindo o arquivo
 	currentSize = extend_bits(&decompress, currentData, currentSize);
 	currentData = decompress;
-printf("antes huffman %d\n", currentSize);
+printf("antes huffman %d\n", currentSize);print_vetor(currentData, 100);
 	// Decodificar por HUFFMAN
 	if(flag_huffman == 1){
 
 		currentSize = huffman_decoder(&huffman, currentData, currentSize);
 		currentData = huffman;
 	}
-printf("depois huffman antes carreira %d\n", currentSize);
+printf("depois huffman antes carreira %d\n", currentSize);print_vetor(currentData, 100);
 	// Decodificar por CARREIRA
 	if(flag_carreira == 1){
 
@@ -67,7 +67,7 @@ printf("depois huffman antes carreira %d\n", currentSize);
 		currentData = carreira;
 
 	}
-printf("depois carreira antes diferenca %d\n", currentSize);
+printf("depois carreira antes diferenca %d\n", currentSize);print_vetor(currentData, 100);
 	// Decodificar por DIFERENCA
 	if(flag_diferenca == 1){
 
@@ -75,7 +75,7 @@ printf("depois carreira antes diferenca %d\n", currentSize);
 		currentData = diferenca;
 
 	}
-printf("depois diferenca %d\n", currentSize);
+printf("depois diferenca %d\n", currentSize);print_vetor(currentData, 100);
 	// Considerando o numero de canais
 	num_channels = buffer[12];
 	if(num_channels == 2){
@@ -98,24 +98,25 @@ printf("depois diferenca %d\n", currentSize);
 	free(headerMerged);
 	free(flagRemoved);
 	free(decompress);
-	free(mergeChannels);
+
+	if(num_channels == 2) free(mergeChannels);
 
 	if(flag_diferenca == 1) free(diferenca);
 
 	if(flag_carreira == 1) free(carreira);
 
 	if(flag_huffman == 1) free(huffman);
-/*
-	int x;
 
-	short file[24] = {9, 15, 33, 1, 3, 5, 3, 7, 4, 5, 1, 2, 1, 1, 1, 0, 1, 0, 0, 0, 0, 19841, 22015, -32768};
+/*	int x;
 
-	int size = 24;
+	short file[36] = {13, 0, 28, 0, 73, 1, 3, 5, 5, 7, 9, 7, 3, 11, 4, 6, 1, 2, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 26484, -27502, 22, -9217, -128};
+
+	int size = 36;
 
 	short * test_result;
 
 	int newsize = huffman_decoder(&test_result, file, size);
-
+printf("new size %d\n", newsize);
 	for(x=0; x<newsize; x++){
 		printf("%d ", test_result[x]);
 	}
