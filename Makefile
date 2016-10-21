@@ -1,11 +1,12 @@
 INC= -I inc/
-FLAGS=-h
+FLAGS=-h -c -d
 ENCODE=./encode $(FLAGS) files/inputs/sample1.wav files/output/output.bin
 DECODE=./decode files/output/output.bin files/output/output.wav
+WFLAGS=-Wall -g -O0 -std=c99 
 
 all: classes
-	@gcc ./src/encoder.c $(INC) -o encode ./obj/file_manager.o ./obj/bit_manager.o ./obj/testes.o ./obj/diferenca.o ./obj/carreira.o ./obj/huffman.o ./obj/fila.o -lm -Wall -g -O0
-	@gcc ./src/decoder.c $(INC) -o decode ./obj/file_manager.o ./obj/bit_manager.o ./obj/testes.o ./obj/diferenca.o ./obj/carreira.o ./obj/huffman.o ./obj/fila.o -lm -Wall -g -O0
+	@gcc ./src/encoder.c $(INC) -o encode ./obj/file_manager.o ./obj/bit_manager.o ./obj/testes.o ./obj/diferenca.o ./obj/carreira.o ./obj/huffman.o ./obj/fila.o -lm $(WFLAGS) 
+	@gcc ./src/decoder.c $(INC) -o decode ./obj/file_manager.o ./obj/bit_manager.o ./obj/testes.o ./obj/diferenca.o ./obj/carreira.o ./obj/huffman.o ./obj/fila.o -lm $(WFLAGS)  
 	@echo "! Compilado com sucesso !"
 	@echo
 	@echo "Para codificar, utilize:"
@@ -16,13 +17,13 @@ all: classes
 	@echo "./decode <entrada.bin> <saida.wav>"
 
 classes:
-	@gcc -c ./src/file_manager.c $(INC) -o ./obj/file_manager.o -g
-	@gcc -c ./src/bit_manager.c $(INC) -o ./obj/bit_manager.o -g
-	@gcc -c ./src/testes.c $(INC) -o ./obj/testes.o -g
-	@gcc -c ./src/diferenca.c $(INC) -o ./obj/diferenca.o -g
-	@gcc -c ./src/carreira.c $(INC) -o ./obj/carreira.o -g
-	@gcc -c ./src/huffman.c $(INC) -o ./obj/huffman.o -g
-	@gcc -c ./src/fila.c $(INC) -o ./obj/fila.o -g
+	@gcc -c ./src/file_manager.c $(INC) -o ./obj/file_manager.o $(WFLAGS) 
+	@gcc -c ./src/bit_manager.c $(INC) -o ./obj/bit_manager.o $(WFLAGS) 
+	@gcc -c ./src/testes.c $(INC) -o ./obj/testes.o $(WFLAGS) 
+	@gcc -c ./src/diferenca.c $(INC) -o ./obj/diferenca.o $(WFLAGS) 
+	@gcc -c ./src/carreira.c $(INC) -o ./obj/carreira.o $(WFLAGS) 
+	@gcc -c ./src/huffman.c $(INC) -o ./obj/huffman.o $(WFLAGS) 
+	@gcc -c ./src/fila.c $(INC) -o ./obj/fila.o $(WFLAGS) 
 
 clean:
 	@rm -f ./obj/*.o encode decode

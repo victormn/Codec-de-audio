@@ -48,9 +48,8 @@ huffPair* ordena_hvetor(huffPair *hvet, int size, int nsym){
 // Ordena o vetor de 'node' com base na frequencia de cada no
 node* ordena_nvetor(node* nos, node no, int size, int num_nos){
 
-	int i, j;
+	int i;
 	int k;
-	node aux;
 	node *ordered = calloc(num_nos,sizeof(node));	
 
 	for(i=0; i<size; i++){
@@ -87,9 +86,10 @@ node* ordena_nvetor(node* nos, node no, int size, int num_nos){
 // Monta arvore de Huffman
 node* cria_arvore(huffPair* ordered_hvet, int size){
 
-	int i, j, k;
-	int id = 1;
-	int num_nos = (2*size)-1;	// o numero de nos da arvore eh dado por: (2*numero_de_simbolos)+1
+	int i, id, num_nos;
+
+	id = 1;
+	num_nos = (2*size)-1;	// o numero de nos da arvore eh dado por: (2*numero_de_simbolos)+1
 	
 	node *nos = calloc(sizeof(node),num_nos);
 
@@ -131,7 +131,7 @@ node* cria_arvore(huffPair* ordered_hvet, int size){
 // Constroi o codigo do simbolo no formato 'short'
 void forma_codigo(huffCode* codigo, int i, int aux, int tam_arvore){
 
-	int j, k, aux1;
+	int j;
 	
 	for(j=0; j<codigo[i].num_bit; j++){
 		if(codigo[i].parent[j] == 0){
@@ -161,7 +161,9 @@ int* buscar_pai(node* arvore, int* parent, int i, int j, int last){
 	}
 	else{
 			buscar_pai(arvore, parent, i, j+1, last);
-	}	
+	}
+
+	return NULL;	
 }
 
 int* numero_bits(node* arvore, int* nbits, int i, int j, int tam_arvore){
@@ -178,14 +180,15 @@ int* numero_bits(node* arvore, int* nbits, int i, int j, int tam_arvore){
 				numero_bits(arvore, nbits, i, k, tam_arvore);
 			}
 		}
-	}	
+	}
+
+	return NULL;	
 }
 
 // Obtem o codigo de cada simbolo
 huffCode* busca_codigo(node* arvore, int tam_arvore){
 
-	int i, j, aux;	
-	int k = 0;
+	int i, aux;
 	int *nbits;
 
 	huffCode *codigo = calloc(sizeof(huffCode),tam_arvore); 
@@ -248,12 +251,9 @@ int num_simbolos(short *buffer, int size){
 void create_huffheader(node * arvore, int num_elementos, short ** vetor, short ** pai){
 
 	int i,child_aux;
-	node current_node;
 
 	*vetor = (short*) calloc (num_elementos, sizeof(short));
 	*pai = 	(short*) calloc (num_elementos, sizeof(short));
-
-	current_node = arvore[num_elementos];
 
 	fila *q = (fila*) calloc (1, sizeof(fila));
 
@@ -265,7 +265,6 @@ void create_huffheader(node * arvore, int num_elementos, short ** vetor, short *
 	for(i = 0; vazia(q) == 0; i++){
 
 		node *current = remove_item(q);
-
 
 		if(current->left != NULL)
 			insere(q, current->left);
@@ -388,7 +387,7 @@ int huffman_encoder(short ** result, short *buffer, int size){
 	int i, j, nsym, data_size, result_size, n_bits;	
 	int k = 0;
 	int check[size], *huff;
-	short *result1, *result2, *vetor, *pai; 
+	short *result1, *vetor, *pai; 
 
 	huff = (int*)calloc(sizeof(int),(2*size));
 	
@@ -509,7 +508,6 @@ short busca_simbolo(short *data, short *vetor, short *pai, int pos, int *i, int 
 	if(pai[pos] == 0)
 		return vetor[pos];
 
-
 	*(j) = *j - 1;
 	*(aux_n_bits) = *aux_n_bits + 1;
 
@@ -523,16 +521,15 @@ short busca_simbolo(short *data, short *vetor, short *pai, int pos, int *i, int 
 	else
 		pos = vetor[pos]+1;
 
-	busca_simbolo(data, vetor, pai, pos, i, j, next_bit(data, *i, *j), aux_n_bits);
+	return busca_simbolo(data, vetor, pai, pos, i, j, next_bit(data, *i, *j), aux_n_bits);
 
 }
 
 int huffman_decoder(short ** result, short *file, int file_size){
 
 	short *vetor, *pai, *data;
-	int n_bits, num_elementos, result_size, original_size, aux_n_bits, i, j, x;
+	int n_bits, num_elementos, original_size, aux_n_bits, i, j, x;
 
-	result_size = 0;
 	aux_n_bits = 0;
 	i = 0;
 	j = 15;

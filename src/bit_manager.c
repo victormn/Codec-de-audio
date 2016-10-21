@@ -97,7 +97,7 @@ int min_bit_calc(short *v, int size){
 int merge_bits(short ** result, short * vet, int size){
 
 	int i, j;
-	int min_bit, n_current, current, numero_zeros;
+	int min_bit, n_current, current;
 	long long merge;
 
 	min_bit = min_bit_calc(vet, size);
@@ -180,7 +180,7 @@ int extend_bits(short ** result, short * vet, int size){
 		// Atribuindo valores iniciais
 		aux = (vet[1] >> (16 - min_bit)) & mask(min_bit);
 		*(*result) = bit1_to_comp2(aux, min_bit);
-		current = vet[1] << 16 + min_bit;
+		current = vet[1] << (16 + min_bit);
 		n_current = 16 - min_bit;
 
 		// Obtendo os valores em 16 bits
