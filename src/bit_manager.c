@@ -214,8 +214,8 @@ int short2char(short * entrada, char ** saida, int size){
 
 	for(i=0; i<size; i++){
 
-		*(*saida+i+i) = (entrada >> 8) & 0xff;
-		*(*saida+i+i+1) = (entrada) & 0xff;
+		*(*saida+i+i) = (entrada[i] >> 8) & 0xff;
+		*(*saida+i+i+1) = (entrada[i]) & 0xff;
 
 	}
 

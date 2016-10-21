@@ -52,14 +52,14 @@ int main(int argc, char const *argv[]){
 	// Descomprimindo o arquivo
 	currentSize = extend_bits(&decompress, currentData, currentSize);
 	currentData = decompress;
-printf("antes huffman %d\n", currentSize);print_vetor(currentData, 100);
+
 	// Decodificar por HUFFMAN
 	if(flag_huffman == 1){
 
 		currentSize = huffman_decoder(&huffman, currentData, currentSize);
 		currentData = huffman;
 	}
-printf("depois huffman antes carreira %d\n", currentSize);print_vetor(currentData, 100);
+
 	// Decodificar por CARREIRA
 	if(flag_carreira == 1){
 
@@ -67,7 +67,7 @@ printf("depois huffman antes carreira %d\n", currentSize);print_vetor(currentDat
 		currentData = carreira;
 
 	}
-printf("depois carreira antes diferenca %d\n", currentSize);print_vetor(currentData, 100);
+
 	// Decodificar por DIFERENCA
 	if(flag_diferenca == 1){
 
@@ -75,7 +75,7 @@ printf("depois carreira antes diferenca %d\n", currentSize);print_vetor(currentD
 		currentData = diferenca;
 
 	}
-printf("depois diferenca %d\n", currentSize);print_vetor(currentData, 100);
+
 	// Considerando o numero de canais
 	num_channels = buffer[12];
 	if(num_channels == 2){

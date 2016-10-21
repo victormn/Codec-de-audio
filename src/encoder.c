@@ -59,7 +59,7 @@ int main(int argc, char const *argv[]){
 		splitChannels = split_channels(currentData, currentSize);
 		currentData = splitChannels;
 	}
-printf("antes diferenca %d\n", currentSize);print_vetor(currentData, 100);
+
 	// Codificacao por DIFERENCA
 	if(flag_diferenca == 1){
 
@@ -67,7 +67,7 @@ printf("antes diferenca %d\n", currentSize);print_vetor(currentData, 100);
 		currentData = diferenca;
 
 	}
-printf("depois diferenca antes carreira %d\n", currentSize);print_vetor(currentData, 100);
+
 	// Codificacao por CARREIRA
 	if(flag_carreira == 1){
 
@@ -75,14 +75,14 @@ printf("depois diferenca antes carreira %d\n", currentSize);print_vetor(currentD
 		currentData = carreira;
 
 	}
-printf("depois carreira antes huffman %d\n", currentSize);print_vetor(currentData, 100);
+
 	// Codificacao por HUFFMAN
 	if(flag_huffman == 1){
 
 		currentSize = huffman_encoder(&huffman, currentData, currentSize);
 		currentData = huffman;
 	}
-printf("depois huffman %d\n", currentSize);print_vetor(currentData, 100);
+
 	// Comprimindo o arquivo
 	currentSize = merge_bits(&compress, currentData, currentSize);
 	currentData = compress;
@@ -114,26 +114,6 @@ printf("depois huffman %d\n", currentSize);print_vetor(currentData, 100);
 	if(flag_carreira == 1) free(carreira);
 
 	if(flag_huffman == 1) free(huffman);
-
-
-/*	int x;
-
-	short file[28] = {1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7};
-
-	int size = 28;
-
-	short * test_result;
-
-	int newsize = huffman_encoder(&test_result, file, size);
-
-	printf("\n\n\n\nnewsize = %d\n", newsize);
-
-	printf("{");
-	for(x=0; x<newsize-1; x++){
-		//contador_bit_a_bit(test_result[x],16);
-		printf("%d, ", test_result[x]);
-	}
-	printf("%d};\n\n\n\n\n\n", test_result[newsize-1]);*/
 
 	return 0;
 }

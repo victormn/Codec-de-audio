@@ -21,14 +21,14 @@ typedef struct Node node;
 
 typedef struct huffCode{
 	short symbol;
-	short code;
+	int code;
 	int *parent;
 	int num_bit;
 }huffCode;
 
 typedef struct codedPair{
 	short symbol;
-	short code;
+	int code;
 	short num_bit;
 }codedPair;
 
@@ -52,7 +52,7 @@ int huffman_encoder(short ** result, short *buffer, int size);
 
 int merge_data_w_header(short* data, short *vetor, short *pai, int num_elementos, int data_size, short ** result, int size, int n_bits);
 
-int merge_datas(short* file, short ** result, int size, int *n_bits);
+int merge_datas(int* file, short ** result, int size, int *n_bits);
 
 void create_header(node * arvore, int num_elementos, int ** vetor, int ** pai);
 
