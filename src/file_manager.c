@@ -209,3 +209,44 @@ short * merge_channels(short *file, int size){
 	return result;
 }
 
+int split_byte_in_half(short ** result, short *file, int size){
+
+	int i, n;
+
+	n=4;
+
+	*result = (short*) calloc (size*n, sizeof(short));
+
+	for(i=0; i<size; i++){
+
+/*		*(*result+i*n) = (file[i] >> 8) & 0xf;
+		*(*result+i*n + 1) = (file[i]) & 0xf;*/
+
+		*(*result+i*n) = (file[i] >> 12) & 0xf;
+		*(*result+i*n + 1) = (file[i] >> 8) & 0xf;
+		*(*result+i*n + 2) = (file[i] >> 4) & 0xf;
+		*(*result+i*n + 3) = (file[i]) & 0xf;
+	}
+
+	return size*n;
+}
+
+int merge_half_byte(short ** result, short *file, int size){
+
+	int i, newsize, n;
+
+	n=4;
+
+	*result = (short*) calloc (size/n, sizeof(short));
+
+	newsize = size/n;
+
+	for(i=0; i<newsize; i++){
+
+		// *(*result+i) = ((file[i*n] << 8) & 0xf0) | ((file[i*n+1]) & 0xf);
+		*(*result+i) = ((file[i*n] << 12) & 0xf000) | ((file[i*n+1] << 8) & 0xf00) | ((file[i*n+2] << 4) & 0xf0) | (file[i*n+3] & 0xf);
+
+	}
+
+	return newsize;
+}

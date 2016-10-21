@@ -1,5 +1,5 @@
 INC= -I inc/
-FLAGS=-h -c -d
+FLAGS=-h
 ENCODE=./encode $(FLAGS) files/inputs/sample1.wav files/output/output.bin
 DECODE=./decode files/output/output.bin files/output/output.wav
 WFLAGS=-Wall -g -O0 -std=c99

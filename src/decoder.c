@@ -22,7 +22,7 @@
 int main(int argc, char const *argv[]){
 	
 	int currentSize = 0, num_channels = 0;
-    short *buffer, *currentData, *header, *data, *diferenca, *carreira, *huffman, *headerMerged, *flagRemoved, *decompress, *mergeChannels;
+    short *buffer, *currentData, *header, *data, *diferenca, *carreira, *huffman, *headerMerged, *flagRemoved, *decompress, *mergeChannels, *bytemerged;
 
 	// Flags para saber quais metodos de codificacao serao utilizados
 	int flag_diferenca = 0, flag_carreira = 0, flag_huffman = 0;
@@ -58,6 +58,11 @@ int main(int argc, char const *argv[]){
 
 		currentSize = huffman_decoder(&huffman, currentData, currentSize);
 		currentData = huffman;
+	}
+
+	if(flag_carreira != 1 && flag_huffman == 1){
+		currentSize = merge_half_byte(&bytemerged, currentData, currentSize);
+		currentData = bytemerged;
 	}
 
 	// Decodificar por CARREIRA
@@ -105,22 +110,9 @@ int main(int argc, char const *argv[]){
 
 	if(flag_carreira == 1) free(carreira);
 
+	if(flag_carreira != 1 && flag_huffman == 1) free(bytemerged);
+
 	if(flag_huffman == 1) free(huffman);
-
-/*	int x;
-
-	short file[36] = {13, 0, 28, 0, 73, 1, 3, 5, 5, 7, 9, 7, 3, 11, 4, 6, 1, 2, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 26484, -27502, 22, -9217, -128};
-
-	int size = 36;
-
-	short * test_result;
-
-	int newsize = huffman_decoder(&test_result, file, size);
-printf("new size %d\n", newsize);
-	for(x=0; x<newsize; x++){
-		printf("%d ", test_result[x]);
-	}
-	printf("\n");*/
 
 	return 0;
 }

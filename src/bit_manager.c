@@ -20,10 +20,12 @@ short valor_maximo(short * vet, int size){
 
 	for(i=0; i<size; i++){
 
-		if(abs(vet[i]) > maior)
+		if(abs(vet[i]) > maior){
 			maior = abs(vet[i]);
+		}
 
 	}
+
 	return maior;
 }
 
@@ -84,7 +86,7 @@ short bit1_to_comp2(short a, int min_bit){
 // Saida: tamanho comprimido
 
 int min_bit_calc(short *v, int size){
-	return log_2((double)valor_maximo(v, size));
+	return log_2((double)abs(valor_maximo(v, size)));
 }
 
 // -- Merge de elementos de um vetor com base no numero minimo para representa-los --
@@ -110,8 +112,8 @@ int merge_bits(short ** result, short * vet, int size){
 	*(*result) = min_bit;
 
 	// Se o vaor minimo de bits que pode ser usado para
-	//representar = 16, nao ha o que comprimir
-	if (min_bit == 16) {
+	//representar > 15, nao ha o que comprimir
+	if (min_bit > 15) {
 		
 		for (i = 0; i < size; i++)
 			*(*result+i+1) = vet[i];
@@ -170,7 +172,7 @@ int extend_bits(short ** result, short * vet, int size){
 	result_size = (int)(floor(((double)size-1.0)*16.0/min_bit));
 	*result = (short*) calloc (result_size+1, sizeof(short));
 
-	if(min_bit == 16) {
+	if(min_bit > 15) {
 
 		for(i = 0; i < result_size; i++)
 			*(*result+i) = vet[i+1];
@@ -204,22 +206,5 @@ int extend_bits(short ** result, short * vet, int size){
 	}
 
 	return result_size;
-}
-
-int short2char(short * entrada, char ** saida, int size){
-
-	int i;
-
-	*saida = (char*) calloc (size*2, sizeof(char));
-
-	for(i=0; i<size; i++){
-
-		*(*saida+i+i) = (entrada[i] >> 8) & 0xff;
-		*(*saida+i+i+1) = (entrada[i]) & 0xff;
-
-	}
-
-	return size*2;
-
 }
 

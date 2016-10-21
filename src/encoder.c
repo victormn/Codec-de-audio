@@ -22,7 +22,7 @@
 int main(int argc, char const *argv[]){
 	
 	int currentSize = 0, originalSize = 0, num_channels = 0, i;
-    short *buffer, *currentData, *header, *data, *splitChannels, *diferenca, *carreira, *huffman, *headerMerged, *flagMerged, *compress;
+    short *buffer, *currentData, *header, *data, *splitChannels, *diferenca, *carreira, *huffman, *headerMerged, *flagMerged, *compress, *bytehalf;
 
 	// Flags para saber quais metodos de codificacao serao utilizados
 	int flag_diferenca = 0, flag_carreira = 0, flag_huffman = 0;
@@ -76,6 +76,11 @@ int main(int argc, char const *argv[]){
 
 	}
 
+	if(flag_carreira != 1 && flag_huffman == 1){
+		currentSize = split_byte_in_half(&bytehalf, currentData, currentSize);
+		currentData = bytehalf;
+	}
+
 	// Codificacao por HUFFMAN
 	if(flag_huffman == 1){
 
@@ -112,6 +117,8 @@ int main(int argc, char const *argv[]){
 	if(flag_diferenca == 1) free(diferenca);
 
 	if(flag_carreira == 1) free(carreira);
+	
+	if(flag_carreira != 1 && flag_huffman == 1) free(bytehalf);
 
 	if(flag_huffman == 1) free(huffman);
 

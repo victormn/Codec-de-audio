@@ -9,6 +9,5 @@ short bit1_to_comp2(short a, int min_bit);
 int merge_bits(short ** result, short * vet, int size);
 int extend_bits(short ** result, short * vet, int size);
 int min_bit_calc(short *v, int size);
-int short2char(short * entrada, char ** saida, int size);
 
 #endif
