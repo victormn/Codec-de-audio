@@ -2,7 +2,7 @@ INC= -I inc/
 FLAGS=-h -c -d
 ENCODE=./encode $(FLAGS) files/inputs/sample1.wav files/output/output.bin
 DECODE=./decode files/output/output.bin files/output/output.wav
-WFLAGS=-Wall -g -O0 -std=c99 
+WFLAGS=-Wall -g -O0 -std=c99
 
 all: classes
 	@gcc ./src/encoder.c $(INC) -o encode ./obj/file_manager.o ./obj/bit_manager.o ./obj/testes.o ./obj/diferenca.o ./obj/carreira.o ./obj/huffman.o ./obj/fila.o -lm $(WFLAGS) 
@@ -30,10 +30,10 @@ clean:
 	@find -name "*~" | xargs rm -rf
 
 memco:
-	@valgrind --track-origins=yes $(ENCODE)
+	@valgrind --track-origins=yes --max-stackframe=2409920 $(ENCODE)
 
 memdec:
-	@valgrind --track-origins=yes $(DECODE)
+	@valgrind --track-origins=yes --max-stackframe=2409920 $(DECODE)
 
 encoder:
 	@echo "Apenas para testes..."

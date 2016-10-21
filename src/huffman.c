@@ -12,7 +12,7 @@
 /* Funcoes auxiliares para a codificacao */
 
 // Ordena o vetor de 'huffPair' com base na frequencias dos simbolos
-huffPair* ordena_hvetor(huffPair *hvet, int size, int nsym){
+huffPair* ordena_hvetor(huffPair *hvet, int size){
 
 	int i, j, k;
 	double aux_f;
@@ -42,11 +42,11 @@ huffPair* ordena_hvetor(huffPair *hvet, int size, int nsym){
 		}
 	}
 
-    return ordered;
+	return ordered;
 }
 
 // Ordena o vetor de 'node' com base na frequencia de cada no
-node* ordena_nvetor(node* nos, node no, int size, int num_nos){
+void ordena_nvetor(node* nos, node no, int size, int num_nos, node ** result){
 
 	int i;
 	int k;
@@ -80,7 +80,11 @@ node* ordena_nvetor(node* nos, node no, int size, int num_nos){
 		}	
 	}
 
-	return ordered;
+	for(i = 0; i<num_nos; i++)
+		*(*result+i) = ordered[i];
+
+	free(ordered);
+
 } 
 
 // Monta arvore de Huffman
@@ -118,7 +122,7 @@ node* cria_arvore(huffPair* ordered_hvet, int size){
 		nos[i+1].edge = 1;
 		nos[i+1].parent = id;	
 
-		nos = ordena_nvetor(nos, nos[size], size, num_nos);		
+		ordena_nvetor(nos, nos[size], size, num_nos, &nos);		
 
 		size++;
 		id++;	
@@ -166,23 +170,17 @@ int* buscar_pai(node* arvore, int* parent, int i, int j, int last){
 	return NULL;	
 }
 
-int* numero_bits(node* arvore, int* nbits, int i, int j, int tam_arvore){
+void numero_bits(node* arvore, int* nbits, int i, int j, int tam_arvore){
 	
 	int k;	
 
-	if(arvore[j].parent == -1){
-		return nbits;
-	}
-	else{
-		for(k=0; k<tam_arvore; k++){		
-			if(arvore[j].parent == arvore[k].id){
-				nbits[i]++;
-				numero_bits(arvore, nbits, i, k, tam_arvore);
-			}
+	for(k=0; k<tam_arvore; k++){		
+		if(arvore[j].parent == arvore[k].id){
+			nbits[i]++;
+			numero_bits(arvore, nbits, i, k, tam_arvore);
 		}
 	}
 
-	return NULL;	
 }
 
 // Obtem o codigo de cada simbolo
@@ -196,13 +194,14 @@ huffCode* busca_codigo(node* arvore, int tam_arvore){
 	
 	for(i=0; i<tam_arvore; i++){
 		numero_bits(arvore, nbits, i, i, tam_arvore);
-		codigo[i].num_bit = nbits[i];		
-		codigo[i].parent = (int*)calloc(codigo[i].num_bit,sizeof(int));			
+		codigo[i].num_bit = nbits[i];	
+		codigo[i].parent = (int*)calloc(codigo[i].num_bit, sizeof(int));			
 	}
 
 	for(i=0; i<tam_arvore; i++){
 		if(arvore[i].parent == -1){
-			codigo[i].parent[(codigo[i].num_bit)-1] = -1;						// no raiz principal
+			if((codigo[i].num_bit) > 0)
+				codigo[i].parent[(codigo[i].num_bit)-1] = -1;						// no raiz principal
 		}
 		else{
 			codigo[i].parent[(codigo[i].num_bit)-1] = arvore[i].edge;			// demais nos 
@@ -219,6 +218,8 @@ huffCode* busca_codigo(node* arvore, int tam_arvore){
 		}
 		else codigo[i].symbol = arvore[i].symbol;
 	}	
+
+	free(nbits);
 
 	return codigo;
 }
@@ -282,8 +283,7 @@ void create_huffheader(node * arvore, int num_elementos, short ** vetor, short *
 		}
 	}
 
-    free_fila(q);
-    free(q);
+	free(q);
 }
 
 int merge_datas(int* file, short ** result, int size, int *n_bits){
@@ -384,14 +384,17 @@ int huffman_encoder(short ** result, short *buffer, int size){
 
 	// Cada posicao do vetor 'buffer'(16 bits) eh um simbolo a ser analisado na codificacao Huffman
 
-	int i, j, nsym, data_size, result_size, n_bits;	
+	int i, j, nsym, data_size, result_size, n_bits, tam_arvore;	
 	int k = 0;
 	int check[size], *huff;
 	short *result1, *vetor, *pai; 
+	huffPair *hvet, *ordered_hvet;
+	huffCode *codigo;
+	node *arvore;
 
-	huff = (int*)calloc(sizeof(int),(2*size));
-	
-	huffPair *hvet = calloc(sizeof(huffPair),size);
+	huff = (int*)calloc(sizeof(int),(2*size + 1));
+
+	hvet = calloc(sizeof(huffPair),size);
 	nsym = 0;
 
 	for(i=0; i<size; i++){
@@ -422,18 +425,14 @@ int huffman_encoder(short ** result, short *buffer, int size){
 	}
 
 	// Manipulando frequencias
-	huffPair *ordered_hvet = calloc(sizeof(huffPair),nsym);
-	ordered_hvet = ordena_hvetor(hvet, size, nsym);		
+	ordered_hvet = ordena_hvetor(hvet, size);		
 
-	// Manipulando arvore
-    int tam_arvore = (2*nsym)-1;
-    node *arvore = calloc(sizeof(node),tam_arvore);		
-    arvore = cria_arvore(ordered_hvet, nsym);    
+	// Manipulando arvore	
+	arvore = cria_arvore(ordered_hvet, nsym);    
 
-    // Manipulando codigos
-    huffCode *codigo = calloc(sizeof(huffPair),tam_arvore);
-    codedPair *coded = calloc(sizeof(codedPair),nsym);
-
+	// Manipulando codigos
+	tam_arvore = (2*nsym)-1;
+	codedPair *coded = calloc(sizeof(codedPair),nsym);
 	codigo = busca_codigo(arvore, tam_arvore);	
 
 	int r = 0;
@@ -466,6 +465,18 @@ int huffman_encoder(short ** result, short *buffer, int size){
 	data_size = merge_datas(huff, &result1, 2*size, &n_bits);
 	create_huffheader(arvore, tam_arvore, &vetor, &pai);
 	result_size = merge_data_w_header(result1, vetor, pai, tam_arvore, data_size, result, size, n_bits);
+
+	free(ordered_hvet);
+	free(arvore);
+	for(i = 0; i<tam_arvore; i++)
+		free(codigo[i].parent);
+	free(codigo);
+	free(coded);
+	free(vetor);
+	free(pai);
+	free(result1);
+	free(huff);
+	free(hvet);
 
 	return result_size;
 }
@@ -536,12 +547,16 @@ int huffman_decoder(short ** result, short *file, int file_size){
 
 	expand_data_n_header(file, &vetor, &pai, &data, file_size, &n_bits, &num_elementos, &original_size);
 
-	*result = (short*) calloc (original_size, sizeof(short));
+	*result = (short*) calloc (original_size+1, sizeof(short));
 
 	for(x = 0; aux_n_bits <= n_bits; x++){
 
 		*(*result+x) = busca_simbolo(data, vetor, pai, 0, &i, &j, next_bit(data, i, j), &aux_n_bits);
 	}	
+
+	free(vetor);
+	free(pai);
+	free(data);
 
 	return original_size;
 

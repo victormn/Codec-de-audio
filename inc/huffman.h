@@ -32,9 +32,9 @@ typedef struct codedPair{
 	short num_bit;
 }codedPair;
 
-huffPair* ordena_hvetor(huffPair *hvet, int size, int nsym);
+huffPair* ordena_hvetor(huffPair *hvet, int size);
 
-node* ordena_nvetor(node* nos, node no, int size, int num_nos);
+void ordena_nvetor(node* nos, node no, int size, int num_nos, node ** result);
 
 node* cria_arvore(huffPair* ordered_hvet, int size);
 
@@ -42,7 +42,7 @@ void forma_codigo(huffCode* codigo, int i, int aux, int tam_arvore);
 
 int* buscar_pai(node* arvore, int* parent, int i, int j, int last);
 
-int* numero_bits(node* arvore, int* nbits, int i, int j, int tam_arvore);
+void numero_bits(node* arvore, int* nbits, int i, int j, int tam_arvore);
 
 huffCode* busca_codigo(node* arvore, int tam_arvore);
 

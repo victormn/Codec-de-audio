@@ -35,34 +35,22 @@ fila *novo_elemento(node *no){
 /* Pop na fila */
 node *remove_item(fila *f){
 
+	node *return_no;
+
 	if(f->prox == NULL){
 		return NULL;
 	}else{
 		fila *tmp = f->prox;
 		f->prox = tmp->prox;
+		return_no = tmp->no;
 
-		return tmp->no;
+		free(tmp);
+
+		return return_no;
 	}
 
 }
 
-/* Free na fila */
-void free_fila(fila *f){
-
-	fila *next, *current;
-
-	if(vazia(f) == 0){
-
-		current = f->prox;
-
-		while(current != NULL){
-
-			next = current->prox;
-			free(current);
-			current = next;
-		}
-	}
-}
 
 void insere(fila *f, node *no){
 
