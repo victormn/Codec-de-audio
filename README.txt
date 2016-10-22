@@ -34,11 +34,3 @@ Outros comandos criados no Makefile que pode ser utilizados:
 Limpar executavel e arquivos ~.o
 $make clean
 
-Realiza testes utilizando arquivos contidos na pasta "files/inputs". Salva na pasta "files/output"
-$make encoder
-$make decoder
-
-Verificar a memoria dos testes citados acima (para a codificação e decodificação, respectivamente)
-$make memco
-$make memdec
-

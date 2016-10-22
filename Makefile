@@ -1,7 +1,4 @@
 INC= -I inc/
-FLAGS=-d -h -c
-ENCODE=./encode $(FLAGS) files/inputs/sample3.wav files/output/output.bin
-DECODE=./decode files/output/output.bin files/output/output.wav
 WFLAGS=-Wall -g -O0 -std=c99
 
 all: classes
@@ -27,17 +24,3 @@ classes:
 clean:
 	@rm -f ./obj/*.o encode decode
 	@find -name "*~" | xargs rm -rf
-
-memco:
-	@valgrind --track-origins=yes --max-stackframe=10880352 $(ENCODE)
-
-memdec:
-	@valgrind --track-origins=yes --max-stackframe=10880352 $(DECODE)
-
-encoder:
-	@echo "Apenas para testes..."
-	@$(ENCODE)
-
-decoder:
-	@echo "Apenas para testes..."
-	@$(DECODE)
