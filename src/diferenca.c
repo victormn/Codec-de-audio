@@ -5,12 +5,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-// -- Faz a diferenca 2 a 2 entre os elementos de um vetor --
-//
-// Entrada: (1) vetor
-//			(2) tamanho do vetor
-// Saida: vetor com as diferencas 2 a 2
-
+// Faz a diferenca 2 a 2 entre os elementos de um vetor
 short * diferenca_encoder(short * buffer, int size){
 
 	int i;
@@ -28,12 +23,7 @@ short * diferenca_encoder(short * buffer, int size){
 	return result;
 }
 
-// -- Desfaz a diferenca 2 a 2 entre os elementos de um vetor --
-//
-// Entrada: (1) vetor
-//			(2) tamanho do vetor
-// Saida: vetor com os elementos originais
-
+// Desfaz a diferenca 2 a 2 entre os elementos de um vetor
 short * diferenca_decoder(short * buffer, int size){
 
 	int i;

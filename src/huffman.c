@@ -1,7 +1,6 @@
 #include "huffman.h"
 #include "bit_manager.h"
 #include "fila.h"
-#include "testes.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,7 +8,7 @@
 
 #include <math.h>
 
-/* Funcoes auxiliares para a codificacao */
+// Funcoes auxiliares para a codificacao
 
 // Ordena o vetor de 'huffPair' com base na frequencias dos simbolos
 huffPair* ordena_hvetor(huffPair *hvet, int size){
@@ -46,6 +45,8 @@ huffPair* ordena_hvetor(huffPair *hvet, int size){
 }
 
 // Ordena o vetor de 'node' com base na frequencia de cada no
+// Essa ordenacao procura qual o local que o novo elemento deve ser inserido
+//e reajusta o vetor com base nessa posicao
 void ordena_nvetor(node* nos, node no, int size, int num_nos, node ** result){
 
 	int i;
@@ -93,7 +94,9 @@ node* cria_arvore(huffPair* ordered_hvet, int size){
 	int i, id, num_nos;
 
 	id = 1;
-	num_nos = (2*size)-1;	// o numero de nos da arvore eh dado por: (2*numero_de_simbolos)+1
+
+	// O numero de nos da arvore eh dado por: (2*numero_de_simbolos)+1
+	num_nos = (2*size)-1;
 	
 	node *nos = calloc(sizeof(node),num_nos);
 
@@ -102,7 +105,9 @@ node* cria_arvore(huffPair* ordered_hvet, int size){
 		nos[i].symbol = ordered_hvet[i].symbol;
 		nos[i].left = NULL;
 		nos[i].right = NULL;
-		nos[i].id = 0;			// quando o no eh o proprio simbolo (no folha), eh atribuido 0 para 'id'
+
+		// Para quando o no for no folha
+		nos[i].id = 0;
 
 	}
 
@@ -132,7 +137,7 @@ node* cria_arvore(huffPair* ordered_hvet, int size){
 	return nos;		
 }
 
-// Constroi o codigo do simbolo no formato 'short'
+// Constroi o codigo do simbolo
 void forma_codigo(huffCode* codigo, int i, int aux, int tam_arvore){
 
 	int j;
@@ -170,6 +175,8 @@ int* buscar_pai(node* arvore, int* parent, int i, int j, int last){
 	return NULL;	
 }
 
+// Retorna em *nbits o numero de bits que cada simbolo precisa para representar
+//seu codigo
 void numero_bits(node* arvore, int* nbits, int i, int j, int tam_arvore){
 	
 	int k;	
@@ -200,11 +207,14 @@ huffCode* busca_codigo(node* arvore, int tam_arvore){
 
 	for(i=0; i<tam_arvore; i++){
 		if(arvore[i].parent == -1){
-			if((codigo[i].num_bit) > 0)
-				codigo[i].parent[(codigo[i].num_bit)-1] = -1;						// no raiz principal
+			if((codigo[i].num_bit) > 0){
+				//No raiz
+				codigo[i].parent[(codigo[i].num_bit)-1] = -1;
+			}
 		}
 		else{
-			codigo[i].parent[(codigo[i].num_bit)-1] = arvore[i].edge;			// demais nos 
+			// Demais nos
+			codigo[i].parent[(codigo[i].num_bit)-1] = arvore[i].edge;
 			buscar_pai(arvore, codigo[i].parent, i, 0, (codigo[i].num_bit)-2);
 		}
 	}		
@@ -224,6 +234,7 @@ huffCode* busca_codigo(node* arvore, int tam_arvore){
 	return codigo;
 }
 
+// Retorna no numero de simbolos da arvore
 int num_simbolos(short *buffer, int size){
 
 	int i, j, nsym;
@@ -234,7 +245,9 @@ int num_simbolos(short *buffer, int size){
 	}
 
 	for(i=0; i<size; i++){
-		if(check[i] == 0){			// o simbolo ainda nao pode ter sido analisado para que sua frequencia seja atualizada
+
+		// O simbolo ainda nao pode ter sido analisado para que sua frequencia seja atualizada
+		if(check[i] == 0){
 			nsym++;
 			
 			for(j=0; j<size; j++){
@@ -249,6 +262,9 @@ int num_simbolos(short *buffer, int size){
 	return nsym;
 }
 
+// Cria os vetores para o header para a codificacao. Sendo eles:
+// - Um vetor que cada posicao indica qual a posicao de seu primeiro filho ou qual seu simbolo, em caso de no folha
+// - Um vetor que indica se a posicao correspondente no vetor descrito acima é de um no pai ou folha
 void create_huffheader(node * arvore, int num_elementos, short ** vetor, short ** pai){
 
 	int i,child_aux;
@@ -286,6 +302,8 @@ void create_huffheader(node * arvore, int num_elementos, short ** vetor, short *
 	free(q);
 }
 
+// Faz um merge nos codigos de cada simbolo, levando em conta a quantidade
+//de bits necessaria para representa-los
 int merge_datas(int* file, short ** result, int size, int *n_bits){
 
 	short *aux;
@@ -302,9 +320,9 @@ int merge_datas(int* file, short ** result, int size, int *n_bits){
 
 	for(j = 1; j < size; j+=2){
 
-		/* file[j] = codigo
-		   file[j+1] = quantidade de bits do proximo codigo 
-		   current_bit = quantidade de bits do codigo atual */
+		// file[j] = codigo
+		// file[j+1] = quantidade de bits do proximo codigo 
+		// current_bit = quantidade de bits do codigo atual
 
 		for(k = current_bit-1; k >= 0; k--){
 
@@ -345,7 +363,12 @@ int merge_datas(int* file, short ** result, int size, int *n_bits){
 
 }
 
-
+// Junta o header com os dados codificados. O Header possui:
+// - Numero de elementos da arvore
+// - Tamanho original do arquivo
+// - Numero de bits do arquivo final
+// - Um vetor que cada posicao indica qual a posicao de seu primeiro filho ou qual seu simbolo, em caso de no folha
+// - Um vetor que indica se a posicao correspondente no vetor descrito acima é de um no pai ou folha
 int merge_data_w_header(short* data, short *vetor, short *pai, int num_elementos, int data_size, short ** result, int size, int n_bits){
 
 	int size_result, i, j;
@@ -382,29 +405,33 @@ int merge_data_w_header(short* data, short *vetor, short *pai, int num_elementos
 // Realiza a codificao Huffman
 int huffman_encoder(short ** result, short *buffer, int size){
 
-	// Cada posicao do vetor 'buffer'(16 bits) eh um simbolo a ser analisado na codificacao Huffman
-
+	// Cada posicao do vetor 'buffer' representa um simbolo a ser analisado na codificacao Huffman
 	int i, j, nsym, data_size, result_size, n_bits, tam_arvore;	
 	int k = 0;
-	int check[size], *huff;
+	int *check, *huff;
 	short *result1, *vetor, *pai; 
 	huffPair *hvet, *ordered_hvet;
 	huffCode *codigo;
 	node *arvore;
 
+	check = (int*)calloc(sizeof(int),(size + 1));
 	huff = (int*)calloc(sizeof(int),(2*size + 1));
 
 	hvet = calloc(sizeof(huffPair),size);
 	nsym = 0;
 
 	for(i=0; i<size; i++){
-		hvet[i].frequency = 1; 		// existe pelo menos uma ocorrencia de cada simbolo
-		check[i] = 0;				// nenhum simbolo  ainda foi analisado
+
+		// Existe pelo menos uma ocorrencia de cada simbolo
+		hvet[i].frequency = 1;
+		// Nenhum simbolo  ainda foi analisado
+		check[i] = 0;
 	}
 
 	for(i=0; i<size; i++){		
 
-		if(check[i] == 0){			// o simbolo ainda nao pode ter sido analisado para que sua frequencia seja atualizada
+		// O simbolo ainda nao pode ter sido analisado para que sua frequencia seja atualizada
+		if(check[i] == 0){
 			nsym++;
 			for(j=0; j<size; j++){
 				if(i != j && buffer[i] == buffer[j]){
@@ -466,6 +493,7 @@ int huffman_encoder(short ** result, short *buffer, int size){
 	create_huffheader(arvore, tam_arvore, &vetor, &pai);
 	result_size = merge_data_w_header(result1, vetor, pai, tam_arvore, data_size, result, size, n_bits);
 
+	free(check);
 	free(ordered_hvet);
 	free(arvore);
 	for(i = 0; i<tam_arvore; i++)
@@ -481,15 +509,16 @@ int huffman_encoder(short ** result, short *buffer, int size){
 	return result_size;
 }
 
-/* Funcoes auxiliares para a decodificacao */
+// Funcoes auxiliares para a decodificacao
 
+// Filtra as informacoes do header
 void expand_data_n_header(short * file, short **vetor, short **pai, short **data, int file_size, int *n_bits, int *num_elementos, int *original_size){
 
 	int i, j, aux, data_size, n;
 
 	*num_elementos = file[0];
-	*original_size = (file[1] << 16) | file[2];
-	*n_bits = (file[3] << 16) | file[4];
+	*original_size = ((file[1] << 16) & 0xffff0000) | (file[2] & 0xffff);
+	*n_bits = ((file[3] << 16) & 0xffff0000) | (file[4] & 0xffff);
 
 	n = *num_elementos;
 
@@ -510,10 +539,12 @@ void expand_data_n_header(short * file, short **vetor, short **pai, short **data
 
 }
 
+// Retorna o proximo bit de um dado vetor
 int next_bit(short *data, int i, int j){
 	return ((data[i] >> j) & 1);
 }
 
+// A partir do codigo, busca o simbolo correspondente
 short busca_simbolo(short *data, short *vetor, short *pai, int pos, int *i, int *j, int bit, int *aux_n_bits){
 
 	if(pai[pos] == 0)
@@ -536,6 +567,7 @@ short busca_simbolo(short *data, short *vetor, short *pai, int pos, int *i, int 
 
 }
 
+// Faz a decodificacao de huffman
 int huffman_decoder(short ** result, short *file, int file_size){
 
 	short *vetor, *pai, *data;

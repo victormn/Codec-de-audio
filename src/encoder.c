@@ -7,13 +7,9 @@
 //
 
 #include "file_manager.h"
-#include "bit_manager.h"
 #include "carreira.h"
 #include "diferenca.h"
 #include "huffman.h"
-
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#include "testes.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -76,8 +72,10 @@ int main(int argc, char const *argv[]){
 
 	}
 
+	// Caso o carreira nao foi aplicado e o huffman foi aplicado, separar o vetor de entrada
+	//de 8 em 8 bits
 	if(flag_carreira != 1 && flag_huffman == 1){
-		currentSize = split_byte_in_half(&bytehalf, currentData, currentSize);
+		currentSize = split_in_8bits(&bytehalf, currentData, currentSize);
 		currentData = bytehalf;
 	}
 

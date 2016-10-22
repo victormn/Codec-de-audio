@@ -1,14 +1,11 @@
 #include "file_manager.h"
+#include "bit_manager.h"
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
-// -- Leitura de um arquivo --
-//
-// Entrada: (1) nome do arquivo a ser lido 
-//			(2) buffer para armazena-lo
-// Saida: tamanho (bytes) do arquivo lido
-
+// Leitura de um arquivo
 int read_wave(char const *arg, short **buffer) {
 
     FILE *f;    
@@ -46,13 +43,7 @@ int read_wave(char const *arg, short **buffer) {
     return result;
 }
 
-// -- Escreve uma stream de dados em um arquivo de entrada --
-//
-// Entrada: (1) nome do arquivo que ira receber a stream de dados 
-//			(2) stream a ser escrita
-//			(3) tamanho da stream
-// Saida: 0, se sucesso, mensagem de erro, se falhar
-
+// Escreve uma stream de dados em um arquivo de entrada
 int write_bin(char const *arg, short *buffer, int size){
 
  	FILE *f;
@@ -71,15 +62,7 @@ int write_bin(char const *arg, short *buffer, int size){
 
  }
 
-// -- Remove o header e salva ele numa variavel --
-//
-// Entrada: (1) vetor que ira receber o header 
-//			(2) vetor que ira receber o restante dos dados 
-//			(3) arquivo que sera separado
-//			(4) tamanho do arquivo
-//			(5) tamanho do header
-// Saida: tamanho dos dados
-
+// Remove o header e salva ele numa variavel
 int split_header(short **header, short **data, short * file, int fileSize, int headerSize){
 
 	int i, j;
@@ -97,15 +80,7 @@ int split_header(short **header, short **data, short * file, int fileSize, int h
 	return dataSize;
 }
 
-// -- Junta o header com o restante dos arquivos --
-//
-// Entrada: (1) vetor que ira receber o arquivo 
-//			(2) header 
-//			(3) restante dos dados
-//			(4) tamanho do arquivo
-//			(5) tamanho do header
-// Saida: tamanho do arquivo final
-
+// Junta o header com o restante dos arquivos
 int merge_header(short **file, short *header, short * data, int dataSize, int headerSize){
 
 	int i, j;
@@ -122,16 +97,7 @@ int merge_header(short **file, short *header, short * data, int dataSize, int he
 	return fileSize;
 }
 
-// -- Adiciona flags que indicam o tipo de codificacao utilizada --
-//
-// Entrada: (1) vetor resultante
-//			(2) vetor
-//			(3) tamanho do vetor
-//			(4) flag da codificacao por diferenca
-//			(5) flag da codificacao por carreira
-//			(6) flag da codificacao por huffman
-// Saida: tamanho do resultado
-
+// Adiciona flags que indicam o tipo de codificacao utilizada
 int merge_compress_flags(short **result, short *file, int size, int d, int c, int h){
 
 	int i;
@@ -146,13 +112,7 @@ int merge_compress_flags(short **result, short *file, int size, int d, int c, in
 	return size+1;
 }
 
-// -- Remove flags que indicam o tipo de codificacao utilizada --
-//
-// Entrada: (1) vetor resultante
-//			(2) vetor
-//			(3) tamanho do vetor
-// Saida: tamanho do resultado
-
+// Remove flags que indicam o tipo de codificacao utilizada
 int remove_compress_flags(short **result, short *file, int size){
 
 	int i;
@@ -165,12 +125,7 @@ int remove_compress_flags(short **result, short *file, int size){
 	return size-1;
 }
 
-// -- Divide o vetor em: primeira metade = primeiro canal; segunda metade = segundo canal --
-//
-// Entrada: (1) vetor 
-//			(2) tamanho do vetor
-// Saida: vetor resultante
-
+// Divide o vetor em: primeira metade = primeiro canal; segunda metade = segundo canal
 short * split_channels(short *file, int size){
 
 	int i, j;
@@ -187,12 +142,7 @@ short * split_channels(short *file, int size){
 	return result;
 }
 
-// -- Junta os canais do vetor, colocandos-os alternadamente em seus elementos --
-//
-// Entrada: (1) vetor 
-//			(2) tamanho do vetor
-// Saida: vetor resultante
-
+// Junta os canais do vetor, colocandos-os alternadamente em seus elementos
 short * merge_channels(short *file, int size){
 
 	int i, j;
@@ -209,33 +159,32 @@ short * merge_channels(short *file, int size){
 	return result;
 }
 
-int split_byte_in_half(short ** result, short *file, int size){
+// Seapara um vetor que possui 16 bits por elementos em um vetor
+//com o dobro do tamanho onde cada elemento esta limitado por 8 bits
+int split_in_8bits(short ** result, short *file, int size){
 
 	int i, n;
 
-	n=4;
+	n = 2;
 
 	*result = (short*) calloc (size*n, sizeof(short));
 
 	for(i=0; i<size; i++){
 
-/*		*(*result+i*n) = (file[i] >> 8) & 0xf;
-		*(*result+i*n + 1) = (file[i]) & 0xf;*/
-
-		*(*result+i*n) = (file[i] >> 12) & 0xf;
-		*(*result+i*n + 1) = (file[i] >> 8) & 0xf;
-		*(*result+i*n + 2) = (file[i] >> 4) & 0xf;
-		*(*result+i*n + 3) = (file[i]) & 0xf;
+		*(*result+(i*n)) = (file[i] >> 8) & 0xff;
+		*(*result+(i*n) + 1) = (file[i]) & 0xff;
 	}
 
 	return size*n;
 }
 
-int merge_half_byte(short ** result, short *file, int size){
+// Trasforma um vetor que possui 8 bits por elementos em um vetor
+//com a metade do tamanho onde cada elemento passara a possuir 16 bits
+int merge_in_16bits(short ** result, short *file, int size){
 
 	int i, newsize, n;
 
-	n=4;
+	n = 2;
 
 	*result = (short*) calloc (size/n, sizeof(short));
 
@@ -243,10 +192,118 @@ int merge_half_byte(short ** result, short *file, int size){
 
 	for(i=0; i<newsize; i++){
 
-		// *(*result+i) = ((file[i*n] << 8) & 0xf0) | ((file[i*n+1]) & 0xf);
-		*(*result+i) = ((file[i*n] << 12) & 0xf000) | ((file[i*n+1] << 8) & 0xf00) | ((file[i*n+2] << 4) & 0xf0) | (file[i*n+3] & 0xf);
+		*(*result+i) = ((file[i*n] << 8) & 0xff00) | ((file[i*n+1]) & 0xff);
 
 	}
 
 	return newsize;
+}
+
+
+// Merge de elementos de um vetor com base no numero minimo para representa-los
+int merge_bits(short ** result, short * vet, int size){
+
+	int i, j;
+	int min_bit, n_current, current;
+	long long merge;
+
+	// Numero minimo para representar o valor maximo
+	min_bit = min_bit_calc(vet, size);
+
+	// Alocando o vetor de saida
+	double result_size = ceil(size*min_bit/16.0) + 1.0;
+	*result = (short*) malloc (sizeof(short)*result_size);
+
+	// Header: numero minimo de bits necessario pra representar um elemento 
+	*(*result) = min_bit;
+
+	// Se o vaor minimo de bits que pode ser usado para
+	//representar > 15, nao ha o que comprimir
+	if (min_bit > 15) {
+		
+		for (i = 0; i < size; i++)
+			*(*result+i+1) = vet[i];
+
+	}else{
+
+		// Valores iniciais da iteracao
+		current = comp2_to_bit1(vet[0],min_bit) << (16 - min_bit);
+		n_current = min_bit;
+
+		// De dois em dois elementos, transforma ambos em 32 bits,
+		//faz a operacao de OR entre ambos e salva no vetor de resposta
+		for (i = 1, j = 1; i < size; i++){
+
+			merge = (current << 16) |  (comp2_to_bit1(vet[i],min_bit) << (32 - min_bit - n_current));
+
+			// Verifica se ainda eh possivel utilizar o byte ou se deve ir ao proximo
+			if ((min_bit + n_current) < 16){
+				current = (merge & 0xffff0000) >> 16;
+				n_current += min_bit;
+			}else{
+				current = (merge & 0xffff);
+				n_current += min_bit - 16;
+				*(*result+j) = (merge & 0xffff0000) >> 16;
+				j++;
+			}
+
+			// Utilizado para o ultimo elemento
+			if(i == size-1) *(*result+j) = current;
+			
+		}
+	}
+
+
+	return result_size;
+}
+
+// Extensão dos elementos de um vetor com base no numero minimo para representa-los (processo inverso do merge)
+int extend_bits(short ** result, short * vet, int size){
+
+	int i, j;
+	int result_size, n_current, min_bit;
+	short aux;
+	long long merge, current;
+
+	// Obtendo o numero minimo de bits que o maior elemento pode ser representado
+	min_bit = vet[0];
+
+	// Obtendo o tamanho do vetor original e alocando ele
+	result_size = (int)(floor(((double)size-1.0)*16.0/min_bit));
+	*result = (short*) calloc (result_size+1, sizeof(short));
+
+	if(min_bit > 15) {
+
+		for(i = 0; i < result_size; i++)
+			*(*result+i) = vet[i+1];
+
+	}else{
+
+		// Atribuindo valores iniciais
+		aux = (vet[1] >> (16 - min_bit)) & mask(min_bit);
+		*(*result) = bit1_to_comp2(aux, min_bit);
+		current = vet[1] << (16 + min_bit);
+		n_current = 16 - min_bit;
+
+		// Obtendo os valores em 16 bits
+		for(i = 1, j = 2; i < result_size; i++, j++){
+
+			merge = (current) |  ((vet[j] << (16 - n_current)) & mask(32 - n_current));
+			aux = (merge >> (32 - min_bit)) & mask(min_bit);
+			*(*result+i) = bit1_to_comp2(aux, min_bit);
+			current = merge << min_bit;
+			n_current += 16 - min_bit;
+
+			while(n_current >= 16){
+				i++;
+				aux = (current >> (32 - min_bit)) & mask(min_bit);
+				*(*result+i) = bit1_to_comp2(aux, min_bit);
+				current = current << min_bit;
+				n_current -= min_bit;
+			}
+
+		}
+	}
+
+	return result_size;
 }

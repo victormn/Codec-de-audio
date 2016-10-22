@@ -3,13 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// -- Faz a codificacao por carreira --
-//
-// Entrada: (1) vetor resultante
-//			(2) vetor
-//			(3) tamanho do vetor
-// Saida: tamanho do resultado
-
+// Faz a codificacao por carreira
 int carreira_encoder(short ** result, short * buffer, int size){
 
 	int i, j;
@@ -86,13 +80,7 @@ int carreira_encoder(short ** result, short * buffer, int size){
 
 }
 
-// -- Faz a decodificacao por carreira --
-//
-// Entrada: (1) vetor resultante
-//			(2) vetor
-//			(3) tamanho do vetor
-// Saida: tamanho do resultado
-
+// Faz a decodificacao por carreira
 int carreira_decoder(short ** result, short * buffer, int size){
 
 	int sizeResult = 0, auxCount = 15;

@@ -4,13 +4,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/* Inicia uma nova fila */
+// Inicia uma nova fila 
 void inicia(fila *f){
 
 	f->prox = NULL;
 }
 
-/* Verifica se a fila esta vazia */
+// Verifica se a fila esta vazia 
 int vazia(fila *f){
 
 	if(f->prox == NULL)
@@ -19,7 +19,7 @@ int vazia(fila *f){
 		return 0;
 }
 
-/* Cria um elemento para a fila*/
+// Cria um elemento para a fila
 fila *novo_elemento(node *no){
 
 	fila *elemento = (fila *) malloc(sizeof(fila));
@@ -32,7 +32,7 @@ fila *novo_elemento(node *no){
 	}
 }
 
-/* Pop na fila */
+// Pop na fila
 node *remove_item(fila *f){
 
 	node *return_no;
@@ -51,7 +51,7 @@ node *remove_item(fila *f){
 
 }
 
-
+// Insere na fila
 void insere(fila *f, node *no){
 
 	fila *novo = novo_elemento(no);

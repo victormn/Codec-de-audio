@@ -7,13 +7,9 @@
 //
 
 #include "file_manager.h"
-#include "bit_manager.h"
 #include "carreira.h"
 #include "diferenca.h"
 #include "huffman.h"
-
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#include "testes.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -60,8 +56,10 @@ int main(int argc, char const *argv[]){
 		currentData = huffman;
 	}
 
+	// Caso o carreira nao foi aplicado e o huffman foi aplicado, o encoder separou o vetor de entrada
+	//de 8 em 8 bits
 	if(flag_carreira != 1 && flag_huffman == 1){
-		currentSize = merge_half_byte(&bytemerged, currentData, currentSize);
+		currentSize = merge_in_16bits(&bytemerged, currentData, currentSize);
 		currentData = bytemerged;
 	}
 

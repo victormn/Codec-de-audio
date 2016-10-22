@@ -9,7 +9,9 @@ int merge_compress_flags(short **result, short *file, int size, int d, int c, in
 int remove_compress_flags(short **result, short *file, int size);
 short * split_channels(short *file, int size);
 short * merge_channels(short *file, int size);
-int split_byte_in_half(short ** result, short *file, int size);
-int merge_half_byte(short ** result, short *file, int size);
+int split_in_8bits(short ** result, short *file, int size);
+int merge_in_16bits(short ** result, short *file, int size);
+int merge_bits(short ** result, short * vet, int size);
+int extend_bits(short ** result, short * vet, int size);
 
 #endif
