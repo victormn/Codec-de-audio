@@ -1,3 +1,5 @@
+Compressor de audio (.wav) utilizando os algoritmos de Codificação por Carreira, Codificação por Diferença e Codificação de Huffman.
+
 Projeto para a disciplina de Multimídia e Hipermídia @ ICMC - 2016
 
 
